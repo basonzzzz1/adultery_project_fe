@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import {toast} from "react-toastify";
 import {useDispatch} from 'react-redux';
 import "./Login.css"
+import Modal from "react-modal";
 import UserService from "../../service/UserService";
 import {updateUserToken} from "../../redux/actions/userActions";
 
@@ -12,7 +13,8 @@ const Login = () => {
     const [user, setUser] = useState({});
     const [userRGT, setUserRGT] = useState({});
     const [isLogin, setIsLogin] = useState(false);
-    const [newUser, setNewUser] = useState({});
+    const [isLoginAdmin, setIsLoginAdmin] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -66,7 +68,13 @@ const Login = () => {
             localStorage.setItem("idAccount", JSON.stringify(response.data.id));
             localStorage.setItem("account", JSON.stringify(response.data));
             dispatch(updateUserToken(response.data));
-            setIsLogin(true);
+            if((response.data.roles[0] == "ROLE_USER" && response.data.roles[1] == "ROLE_ADMIN") ||(response.data.roles[0] == "ROLE_ADMIN" && response.data.roles[1] == "ROLE_USER")){
+                 setModalIsOpen(true)
+            }else if(response.data.roles[0] == "ROLE_ADMIN") {
+                setIsLoginAdmin(true)
+            }else{
+                setIsLogin(true);
+            }
         } catch (error) {
             console.error("Error:", error);
             await checkLogin(user);
@@ -99,6 +107,15 @@ const Login = () => {
         } catch (error) {
             console.error("Error:", error);
         }
+    }
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+    const loginAdmin = () => {
+      setIsLoginAdmin(true)
+    }
+    const loginUser = () => {
+      setIsLogin(true)
     }
     return (
         <div style={{backgroundColor: "violet"}}>
@@ -222,7 +239,42 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={{
+                    content: {
+                        width: "280px",
+                        height: "30px",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        display: "flex",
+                        overlay: {
+                            backgroundColor: "rgba(0,0,0,0)",
+                        },
+                        border : "1px solid black",
+                        scroll : "none",
+                        overflow : "hidden",
+                    },
+                }}
+                id="myCustomModalId"
+            >
+                <div>
+                    <button
+                        style={{backgroundColor :"orange",height :"30px" , color : "white" , border :"hidden"}}
+                    onClick={()=>loginUser()}>
+                        Trang Người Dùng
+                    </button>
+                    <button
+                        style={{backgroundColor :"orange",height :"30px" , color : "white" , border :"hidden",marginLeft :"20px" , width : "130px"}}
+                    onClick={()=>loginAdmin()}>
+                        Trang Quản Lý
+                    </button>
+                </div>
+            </Modal>
             {isLogin && <Navigate to="/home"/>}
+            {isLoginAdmin && <Navigate to="/admin"/>}
         </div>
     );
 };

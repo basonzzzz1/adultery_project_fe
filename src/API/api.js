@@ -1,2 +1,11 @@
 export const LOGIN = `/User/login`;
 export const REGISTER = `/User/register`;
+export const WEBSOCKETURL = `ws://localhost:8080/ws/websocket`;
+export const REQUESTCHATROOM = `http://localhost:8080/Chat/notification/create/chatroom`;
+export const CREATECHATROOM = `http://localhost:8080/Chat/create/chatRoom`;
+export const GETALLCHATROOM = `http://localhost:8080/Chat/chatRoom/all`;
+export const FINDBYCHATROOMID = `http://localhost:8080/Chat/findByChatRoomId`;
+export const CHECKCHATROOM = `http://localhost:8080/Chat/checkChatRoom`;
+export const REQUESTALL = `http://localhost:8080/Chat/messageRequest/all`;
+export const FINDALLMESSGEINCHATROOMID = `http://localhost:8080/Chat/findAllMessageInChatRoomId`;
+export const CREATEMESSAGE = `http://localhost:8080/Chat/create/message`;
