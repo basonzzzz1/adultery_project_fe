@@ -1,18 +1,131 @@
 import axios from "axios";
 import {
+    BANNER,
     CHECKCHATROOM,
-    CREATECHATROOM, CREATEMESSAGE,
-    FINDALLMESSGEINCHATROOMID,
+    CREATECHATROOM, CREATEMESSAGE, extraPoints,
+    FINDALLMESSGEINCHATROOMID, FINDALLUSER,
     FINDBYCHATROOMID,
-    GETALLCHATROOM,
+    GETALLCHATROOM, loggedInUser, LOGOUT, minusPoints,
     REQUESTALL,
-    REQUESTCHATROOM
+    REQUESTCHATROOM, UNBANNER
 } from "../API/api";
 
 const ManageService = {
     requestChatroom: (messageRequest) => {
         return new Promise((resolve, reject) => {
             axios.post(REQUESTCHATROOM,messageRequest,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    logOut: (username) => {
+        return new Promise((resolve, reject) => {
+            axios.post(LOGOUT,username,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    minusPoints: (pointRequest) => {
+        return new Promise((resolve, reject) => {
+            axios.post(minusPoints,pointRequest,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    extraPoints: (pointRequest) => {
+        return new Promise((resolve, reject) => {
+            axios.post(extraPoints,pointRequest,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    loggedInUser: () => {
+        return new Promise((resolve, reject) => {
+            axios.get(loggedInUser,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    banner: (u) => {
+        return new Promise((resolve, reject) => {
+            axios.post(BANNER,u,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    unBanner: (u) => {
+        return new Promise((resolve, reject) => {
+            axios.post(UNBANNER,u,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    findAllUser: () => {
+        return new Promise((resolve, reject) => {
+            axios.get(FINDALLUSER,
                 {headers: {
                         "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
                         'Content-Type': 'application/json'

@@ -1,6 +1,13 @@
 export const LOGIN = `/User/login`;
 export const REGISTER = `/User/register`;
+export const LOGOUT = `http://localhost:8080/User/logout`;
+export const BANNER = `http://localhost:8080/User/banner`;
+export const UNBANNER = `http://localhost:8080/User/unBanner`;
 export const WEBSOCKETURL = `ws://localhost:8080/ws/websocket`;
+export const FINDALLUSER = `http://localhost:8080/User/findAllUser`;
+export const extraPoints = `http://localhost:8080/User/extraPoints`;
+export const loggedInUser = `http://localhost:8080/User/loggedInUser`;
+export const minusPoints = `http://localhost:8080/User/minusPoints`;
 export const REQUESTCHATROOM = `http://localhost:8080/Chat/notification/create/chatroom`;
 export const CREATECHATROOM = `http://localhost:8080/Chat/create/chatRoom`;
 export const GETALLCHATROOM = `http://localhost:8080/Chat/chatRoom/all`;

@@ -15,6 +15,7 @@ const Login = () => {
     const [isLogin, setIsLogin] = useState(false);
     const [isLoginAdmin, setIsLoginAdmin] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalIsBannedOpen, setModalIsBannedOpen] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -62,21 +63,27 @@ const Login = () => {
     const loginIn = async () => {
         try {
             const response = await UserService.login(user);
-            toast.success("Đăng nhập thành công !");
+
             localStorage.setItem("userToken", JSON.stringify(response.data.accessToken));
             console.log(response)
             localStorage.setItem("idAccount", JSON.stringify(response.data.id));
             localStorage.setItem("account", JSON.stringify(response.data));
             dispatch(updateUserToken(response.data));
-            if((response.data.roles[0] == "ROLE_USER" && response.data.roles[1] == "ROLE_ADMIN") ||(response.data.roles[0] == "ROLE_ADMIN" && response.data.roles[1] == "ROLE_USER")){
-                 setModalIsOpen(true)
-            }else if(response.data.roles[0] == "ROLE_ADMIN") {
+            if ((response.data.roles[0] == "ROLE_USER" && response.data.roles[1] == "ROLE_ADMIN") || (response.data.roles[0] == "ROLE_ADMIN" && response.data.roles[1] == "ROLE_USER")) {
+                setModalIsOpen(true)
+            }else if (response.data.roles[0] == "ROLE_ADMIN") {
                 setIsLoginAdmin(true)
-            }else{
+                toast.success("Đăng nhập thành công !");
+            }else if (response.data.banner) {
+                setModalIsBannedOpen(true)
+                toast.error("tài khoản của bạn đã bị khóa !")
+            } else {
                 setIsLogin(true);
+                toast.success("Đăng nhập thành công !");
             }
         } catch (error) {
             console.error("Error:", error);
+            toast.warning("Tài khoản hoặc mật khẩu không đúng !")
             await checkLogin(user);
         }
     }
@@ -111,11 +118,14 @@ const Login = () => {
     const closeModal = () => {
         setModalIsOpen(false);
     };
+    const closeModalBanner = () => {
+        setModalIsBannedOpen(false)
+    };
     const loginAdmin = () => {
-      setIsLoginAdmin(true)
+        setIsLoginAdmin(true)
     }
     const loginUser = () => {
-      setIsLogin(true)
+        setIsLogin(true)
     }
     return (
         <div style={{backgroundColor: "violet"}}>
@@ -127,7 +137,7 @@ const Login = () => {
                     <a href="#">Trợ Giúp</a>
                 </nav>
                 <form action="" className="search-bar" style={{transform: 'translateX(-300px)'}}>
-                    <input type="text"  placeholder="Tìm Kiếm..."/>
+                    <input type="text" placeholder="Tìm Kiếm..."/>
                     <button><i className='bx bx-search'></i></button>
                 </form>
             </header>
@@ -135,7 +145,7 @@ const Login = () => {
             <div className="container">
                 <div className="item">
                     <h2 className="logo"><i className='bx bxl-xing'></i>Lucky Love</h2>
-                    <div className="text-item" style={{ transform: 'translateX(0px) translateY(-150px)' }}>
+                    <div className="text-item" style={{transform: 'translateX(0px) translateY(-150px)'}}>
                         <h2>
                             Xin Chào! <br/>
                             <span>Đến với ứng dụng lucky love!</span>
@@ -193,7 +203,7 @@ const Login = () => {
                             {
                                 usernameRGT: '',
                                 passwordRGT: '',
-                                phone:''
+                                phone: ''
                             }
                         }
                                 validationSchema={validateSchemaRegister}
@@ -244,7 +254,7 @@ const Login = () => {
                 onRequestClose={closeModal}
                 style={{
                     content: {
-                        width: "280px",
+                        width: "300px",
                         height: "30px",
                         top: "50%",
                         left: "50%",
@@ -253,24 +263,55 @@ const Login = () => {
                         overlay: {
                             backgroundColor: "rgba(0,0,0,0)",
                         },
-                        border : "1px solid black",
-                        scroll : "none",
-                        overflow : "hidden",
+                        border: "1px solid black",
+                        scroll: "none",
+                        overflow: "hidden",
+                        backgroundColor: "#f72d7a"
                     },
                 }}
                 id="myCustomModalId"
             >
-                <div>
-                    <button
-                        style={{backgroundColor :"orange",height :"30px" , color : "white" , border :"hidden"}}
-                    onClick={()=>loginUser()}>
-                        Trang Người Dùng
+                <div style={{display: "flex"}}>
+                    <button onClick={() => loginUser()} className={"button-admin-and-user"}
+                            style={{height: "35px", marginLeft: "18px"}}>
+                        Người dùng
+                        <div className="arrow-wrapper">
+                            <div className="arrow"></div>
+                        </div>
                     </button>
-                    <button
-                        style={{backgroundColor :"orange",height :"30px" , color : "white" , border :"hidden",marginLeft :"20px" , width : "130px"}}
-                    onClick={()=>loginAdmin()}>
-                        Trang Quản Lý
+                    <button onClick={() => loginAdmin()} className={"button-admin-and-user"}
+                            style={{height: "35px", marginLeft: "20px"}}>
+                        Quản Lý
+                        <div className="arrow-wrapper">
+                            <div className="arrow"></div>
+                        </div>
                     </button>
+                </div>
+            </Modal>
+            <Modal
+                isOpen={modalIsBannedOpen}
+                onRequestClose={closeModalBanner}
+                style={{
+                    content: {
+                        width: "300px",
+                        height: "30px",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        display: "flex",
+                        overlay: {
+                            backgroundColor: "rgba(0,0,0,0)",
+                        },
+                        border: "1px solid black",
+                        scroll: "none",
+                        overflow: "hidden",
+                        backgroundColor: "#f72d7a"
+                    },
+                }}
+                id="myCustomModalBannerId"
+            >
+                <div style={{display: "flex"}}>
+                    <p>tài khoản đã bị khóa</p>
                 </div>
             </Modal>
             {isLogin && <Navigate to="/home"/>}
