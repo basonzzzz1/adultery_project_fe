@@ -462,7 +462,7 @@
 
 
 /*-----------------------*/
-.button-admin-and-user {
+.button-admin-and-user-123 {
     --primary-color: #2c2fc5;
     --secondary-color: #fff;
     --hover-color: #111;
@@ -481,13 +481,13 @@
     font-weight: bold;
 }
 
-.button-admin-and-user .arrow-wrapper {
+.button-admin-and-user-123 .arrow-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.button-admin-and-user .arrow {
+.button-admin-and-user-123 .arrow {
     margin-top: 1px;
     width: var(--arrow-width);
     background: var(--primary-color);
@@ -496,7 +496,7 @@
     transition: 0.2s;
 }
 
-.button-admin-and-user .arrow::before {
+.button-admin-and-user-123 .arrow::before {
     content: "";
     box-sizing: border-box;
     position: absolute;
@@ -510,14 +510,14 @@
     transform: rotate(-45deg);
 }
 
-.button-admin-and-user:hover {
+.button-admin-and-user-123:hover {
     background-color: var(--hover-color);
 }
 
-.button-admin-and-user:hover .arrow {
+.button-admin-and-user-123:hover .arrow {
     background: var(--secondary-color);
 }
 
-.button-admin-and-user:hover .arrow:before {
+.button-admin-and-user-123:hover .arrow:before {
     right: 0;
 }

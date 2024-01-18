@@ -255,7 +255,7 @@ const Login = () => {
                 style={{
                     content: {
                         width: "300px",
-                        height: "30px",
+                        height: "80px",
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
@@ -272,15 +272,15 @@ const Login = () => {
                 id="myCustomModalId"
             >
                 <div style={{display: "flex"}}>
-                    <button onClick={() => loginUser()} className={"button-admin-and-user"}
-                            style={{height: "35px", marginLeft: "18px"}}>
+                    <button onClick={() => loginUser()} className={"button-admin-and-user-123"}
+                            style={{height: "45px", marginLeft: "0px" }}>
                         Người dùng
                         <div className="arrow-wrapper">
                             <div className="arrow"></div>
                         </div>
                     </button>
-                    <button onClick={() => loginAdmin()} className={"button-admin-and-user"}
-                            style={{height: "35px", marginLeft: "20px"}}>
+                    <button onClick={() => loginAdmin()} className={"button-admin-and-user-123"}
+                            style={{height: "45px", marginLeft: "20px"}}>
                         Quản Lý
                         <div className="arrow-wrapper">
                             <div className="arrow"></div>
