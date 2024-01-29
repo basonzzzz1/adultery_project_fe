@@ -114,3 +114,15 @@ code {
     opacity: 1;
   }
 }
+@media screen and (max-width: 800px) {
+  #management-user-h2 {
+    margin-left: -20%;
+  }
+
+  #management-user-table {
+    margin-left: -20%;
+  }
+  #body-admin-1{
+    display: block;
+  }
+}

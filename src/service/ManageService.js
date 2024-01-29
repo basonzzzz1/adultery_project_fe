@@ -2,12 +2,29 @@ import axios from "axios";
 import {
     BANNER,
     CHECKCHATROOM,
-    CREATECHATROOM, createCskh, createCskhAdmin, CREATEMESSAGE, extraPoints, extraPointsInUser,
-    FINDALLMESSGEINCHATROOMID, FINDALLUSER,
+    CountSpin,
+    CREATECHATROOM,
+    createCskh,
+    createCskhAdmin, createExchangePoints,
+    CREATEMESSAGE,
+    deleteChatRoom, deleteExchangePoints,
+    extraPoints,
+    extraPointsInUser,
+    FINDALLMESSGEINCHATROOMID,
+    FINDALLUSER,
     FINDBYCHATROOMID,
-    GETALLCHATROOM, getAllCskhInUserAdmin, getAllCskhInUserDetail, getAllCskhUser, loggedInUser, LOGOUT, minusPoints,
+    GETALLCHATROOM,
+    getAllCskhInUserAdmin,
+    getAllCskhInUserDetail,
+    getAllCskhUser, getAllExchangePoints,
+    getListValueSpin,
+    loggedInUser,
+    LOGOUT,
+    minusPoints,
     REQUESTALL,
-    REQUESTCHATROOM, UNBANNER
+    REQUESTCHATROOM, setListValueSpin,
+    SpinRequest,
+    UNBANNER
 } from "../API/api";
 
 const ManageService = {
@@ -187,6 +204,54 @@ const ManageService = {
                 });
         });
     },
+    CountSpin: () => {
+        return new Promise((resolve, reject) => {
+            axios.get(CountSpin,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    SpinRequest: (SpinRequestEdit) => {
+        return new Promise((resolve, reject) => {
+            axios.post(SpinRequest,SpinRequestEdit,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    deleteChatRoom: (chatRoomRequest) => {
+        return new Promise((resolve, reject) => {
+            axios.post(deleteChatRoom,chatRoomRequest,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
     getAllCskhInUserDetail: (cskhRequest) => {
         return new Promise((resolve, reject) => {
             axios.post(getAllCskhInUserDetail,cskhRequest,
@@ -331,6 +396,38 @@ const ManageService = {
                 });
         });
     },
+    getListValueSpin: () => {
+        return new Promise((resolve, reject) => {
+            axios.get(getListValueSpin,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    setListValueSpin: (listSpinValue) => {
+        return new Promise((resolve, reject) => {
+            axios.post(setListValueSpin,listSpinValue,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
     createMessage: (message) => {
         return new Promise((resolve, reject) => {
             axios.post(CREATEMESSAGE,message,
@@ -347,5 +444,54 @@ const ManageService = {
                 });
         });
     },
+    getAllExchangePoints: () => {
+        return new Promise((resolve, reject) => {
+            axios.get(getAllExchangePoints,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    createExchangePoints: (ExchangePoints) => {
+        return new Promise((resolve, reject) => {
+            axios.post(createExchangePoints,ExchangePoints,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+    deleteExchangePoints: (ExchangePoints) => {
+        return new Promise((resolve, reject) => {
+            axios.post(deleteExchangePoints,ExchangePoints,
+                {headers: {
+                        "Authorization": "Bearer " + JSON.parse(localStorage.getItem('userToken')),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(function (err) {
+                    reject(err)
+                });
+        });
+    },
+
 }
 export default ManageService;

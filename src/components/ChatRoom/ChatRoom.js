@@ -4,7 +4,15 @@ import ManageService from "../../service/ManageService";
 import {Navigate} from "react-router-dom";
 import "./ChatRoom.css"
 import {toast} from "react-toastify";
-
+import { v4 } from "uuid";
+import {storage} from "../../config/firebase"
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    listAll,
+    list,
+} from "firebase/storage";
 const ChatRoom = () => {
     const webSocket = useWebSocket();
     const [isExit, setIsExit] = useState(false);
@@ -12,6 +20,8 @@ const ChatRoom = () => {
     const [listMessage, setListMessage] = useState([]);
     const [user, setUser] = useState({});
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [imageUpload, setImageUpload] = useState(null);
+    const [imageUrls, setImageUrls] = useState("");
     useEffect(() => {
         if (webSocket) {
             webSocket.subscribe('/chat/user/queue/position-update', async (message) => {
@@ -39,23 +49,57 @@ const ChatRoom = () => {
         }
         setLoad(false)
     }, [load]);
-    const createMessageUser = () => {
-        let content = document.getElementById("messageInput").value
-        let message = {
-            content: content,
-            seen: false,
-            user: {username: user.username},
-            chatRoom: {id: localStorage.getItem("idChatRoom")}
+    const imagesListRef = ref(storage, "images/");
+    const uploadFile = () => {
+
+    };
+    const createMessageUser = async () => {
+        let content = document.getElementById("messageInput").value;
+
+        if (imageUpload != null) {
+            const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+            const snapshot = await uploadBytes(imageRef, imageUpload);
+            const url = await getDownloadURL(snapshot.ref);
+            setImageUrls(url);
+            let message = {
+                content: content,
+                image: url,
+                seen: false,
+                chatRoom: {
+                    id: localStorage.getItem("idChatRoom"),
+                },
+            };
+            ManageService.createMessage(message).then((response)=>{
+                toast.success("Gửi Thành công !");
+                document.getElementById("messageInput").value = "";
+                setLoad(true);
+                setImageUrls("");
+                setImageUpload(null)
+                document.getElementById("messageInput").value = "";
+            }).catch((err)=>{
+                console.log(err)
+            });
+        }else {
+            let message = {
+                content: content,
+                image: null,
+                seen: false,
+                chatRoom: {
+                    id: localStorage.getItem("idChatRoom"),
+                },
+            };
+            ManageService.createMessage(message).then((response)=>{
+                toast.success("Gửi Thành công !");
+                document.getElementById("messageInput").value = "";
+                setLoad(true);
+                document.getElementById("messageInput").value = "";
+            }).catch((err)=>{
+                console.log(err)
+            });
         }
-        ManageService.createMessage(message).then((response) => {
-            toast.success("Gửi Thành công !")
-            document.getElementById("messageInput").value = "";
-            setLoad(true)
-        }).catch((err) => {
-            toast.error("gửi không thành công !")
-            console.log(err)
-        })
-    }
+
+    };
+
     const Exit = () => {
         setIsExit(true)
     }
@@ -81,6 +125,7 @@ const ChatRoom = () => {
 
     const scrollAuto = () => {
         let objDiv = document.getElementById("bodyMessage");
+        // console.log("=====================",objDiv.scrollHeight)
         objDiv.scrollTop = objDiv.scrollHeight;
     }
     return (
@@ -123,40 +168,41 @@ const ChatRoom = () => {
                                 justifyContent: m.user.id == localStorage.getItem('idAccount') ? 'flex-end' : 'flex-start',
                             }}
                         >
-                            <div
-                                className={m.user.id == localStorage.getItem('idAccount') ? 'my-message' : 'other-message'}
-                            >
-                                <div style={{ width: '100%' }}>
-                                    <div style={{ display: 'block', float: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
-                                        <p style={{color : "#a2a2a2", fontSize: '10px', height: '5px', textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
-                                            {calculateTimeChat(m.createAt)}
+                                <div className={m.user.id == localStorage.getItem('idAccount') ? 'my-message' : 'other-message'}>
+                                    <div style={{ width: '100%' }}>
+                                        <div style={{ display: 'block', float: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
+                                            <p style={{color : "#a2a2a2", fontSize: '10px', height: '5px', textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
+                                                {calculateTimeChat(m.createAt)}
+                                            </p>
+                                            <p style={{color : "#a2a2a2", height: '5px', textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
+                                                {m.user.username}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div
+                                        style={{
+                                            backgroundColor: m.user.id == localStorage.getItem('idAccount') ? '#f72d7a':'white',
+                                            marginTop: '28px',
+                                            borderRadius: '8px',
+                                            textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left',
+                                        }}
+                                    >
+                                        <p style={{
+                                            color : m.user.id == localStorage.getItem('idAccount') ? "white" :"black",
+                                            padding:"5px",
+                                            paddingLeft: '5px',
+                                            paddingRight: '5px',
+                                            marginLeft: m.user.id != localStorage.getItem('idAccount') ? '0' : '10px',
+                                            marginRight: m.user.id == localStorage.getItem('idAccount') ? '10px' : '0',
+                                        }}>
+                                            {m.content}
                                         </p>
-                                        <p style={{color : "#a2a2a2", height: '5px', textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
-                                            {m.user.username}
-                                        </p>
+                                        <div style={{width :"100%" ,float :m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left'}}>
+                                            <img style={{maxWidth :"800px"}} src={m.image} alt=""/>
+                                        </div>
                                     </div>
                                 </div>
-                                <br />
-                                <div
-                                    style={{
-                                        backgroundColor: m.user.id == localStorage.getItem('idAccount') ? '#f72d7a':'white',
-                                        marginTop: '28px',
-                                        borderRadius: '8px',
-                                        textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left',
-                                    }}
-                                >
-                                    <p style={{
-                                        color : m.user.id == localStorage.getItem('idAccount') ? "white" :"black",
-                                        padding:"5px",
-                                        paddingLeft: '5px',
-                                        paddingRight: '5px',
-                                        marginLeft: m.user.id != localStorage.getItem('idAccount') ? '0' : '10px',
-                                        marginRight: m.user.id == localStorage.getItem('idAccount') ? '10px' : '0',
-                                    }}>
-                                        {m.content}
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     ))}
                 </div>
@@ -172,7 +218,7 @@ const ChatRoom = () => {
                     {/*}}/>*/}
                     <div className="messageBox">
                         <div className="fileUploadWrapper">
-                            <label htmlFor="file">
+                            <label htmlFor="file" style={{marginTop :"8px"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
                                     <circle
                                         stroke-width="20"
@@ -197,7 +243,9 @@ const ChatRoom = () => {
                                 </svg>
                                 <span className="tooltip">Add an image</span>
                             </label>
-                            <input type="file" id="file" name="file" />
+                            <input type="file" id="file" name="file" onChange={(event) => {
+                                setImageUpload(event.target.files[0]);
+                            }} />
                         </div>
                         <input  required="" placeholder="Message..." type="text" id="messageInput" />
                         <button id="sendButton" onClick={() => createMessageUser()}>
