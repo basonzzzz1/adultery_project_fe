@@ -366,6 +366,9 @@ img {
     opacity: 1;
     top: -160%;
 }
+::-webkit-scrollbar {
+    display: none;
+}
 
 #management-user-table ::-webkit-scrollbar {
     display: none;

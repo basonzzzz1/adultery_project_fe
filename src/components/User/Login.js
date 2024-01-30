@@ -71,10 +71,10 @@ const Login = () => {
             dispatch(updateUserToken(response.data));
             if ((response.data.roles[0] == "ROLE_USER" && response.data.roles[1] == "ROLE_ADMIN") || (response.data.roles[0] == "ROLE_ADMIN" && response.data.roles[1] == "ROLE_USER")) {
                 setModalIsOpen(true)
-            }else if (response.data.roles[0] == "ROLE_ADMIN") {
+            } else if (response.data.roles[0] == "ROLE_ADMIN") {
                 setIsLoginAdmin(true)
                 toast.success("Đăng nhập thành công !");
-            }else if (response.data.banner) {
+            } else if (response.data.banner) {
                 setModalIsBannedOpen(true)
                 toast.error("tài khoản của bạn đã bị khóa !")
             } else {
@@ -92,6 +92,7 @@ const Login = () => {
             const userRegister = {
                 username: userRGT.usernameRGT,
                 phone: userRGT.phone,
+                role: ["user"],
                 password: userRGT.passwordRGT
             };
             const response = await UserService.register(userRegister);
@@ -127,127 +128,238 @@ const Login = () => {
     const loginUser = () => {
         setIsLogin(true)
     }
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     return (
         <div style={{backgroundColor: "violet"}}>
-            <header className="header">
-                <nav className="navbar">
-                    <a href="#">Trang Chủ</a>
-                    <a href="#">Thông tin</a>
-                    <a href="#">Nội dung</a>
-                    <a href="#">Trợ Giúp</a>
-                </nav>
-                <form action="" className="search-bar" style={{transform: 'translateX(-300px)'}}>
-                    <input type="text" placeholder="Tìm Kiếm..."/>
-                    <button><i className='bx bx-search'></i></button>
-                </form>
-            </header>
+            {windowWidth > 800 ? <header className="header">
+                    <nav className="navbar">
+                        <a href="#">Trang Chủ</a>
+                        <a href="#">Thông tin</a>
+                        <a href="#">Nội dung</a>
+                        <a href="#">Trợ Giúp</a>
+                    </nav>
+                    <form action="" className="search-bar" style={{transform: 'translateX(-300px)'}}>
+                        <input type="text" placeholder="Tìm Kiếm..."/>
+                        <button><i className='bx bx-search'></i></button>
+                    </form>
+                </header>
+                :
+                <header className="header" style={{textAlign: "center"}}><h3
+                    style={{marginLeft: "15%", color: "white"}}>Tìm bạn bốn phương</h3></header>
+            }
+
             <div className="background"></div>
             <div className="container">
-                <div className="item">
-                    <h2 className="logo"><i className='bx bxl-xing'></i>Lucky Love</h2>
-                    <div className="text-item" style={{transform: 'translateX(0px) translateY(-150px)'}}>
-                        <h2>
-                            Xin Chào! <br/>
-                            <span>Đến với ứng dụng lucky love!</span>
-                        </h2>
-                        <div className="social-icon">
-                            <a href="#"><i className='bx bxl-facebook'></i></a>
-                            <a href="#"><i className='bx bxl-twitter'></i></a>
-                            <a href="#"><i className='bx bxl-youtube'></i></a>
-                            <a href="#"><i className='bx bxl-instagram'></i></a>
-                            <a href="#"><i className='bx bxl-linkedin'></i></a>
+                {windowWidth > 800 ?
+                    <div className="item">
+                        <h2 className="logo"><i className='bx bxl-xing'></i>Lucky Love</h2>
+                        <div className="text-item" style={{transform: 'translateX(0px) translateY(-150px)'}}>
+                            <h2>
+                                Xin Chào! <br/>
+                                <span>Đến với ứng dụng lucky love!</span>
+                            </h2>
+                            <div className="social-icon">
+                                <a href="#"><i className='bx bxl-facebook'></i></a>
+                                <a href="#"><i className='bx bxl-twitter'></i></a>
+                                <a href="#"><i className='bx bxl-youtube'></i></a>
+                                <a href="#"><i className='bx bxl-instagram'></i></a>
+                                <a href="#"><i className='bx bxl-linkedin'></i></a>
+                            </div>
+                        </div>
+                    </div> : <></>}
+                {windowWidth > 800 ?
+                    <div className="login-section">
+                        <div className="form-box login">
+                            <Formik initialValues={
+                                {
+                                    username: '',
+                                    password: ''
+                                }
+                            }
+                                    validationSchema={validateSchemaLogin}
+                                    onSubmit={(values) => {
+                                        loginIn().then(console.log(values)).catch();
+                                    }}>
+                                <Form>
+                                    <h2>Đăng nhập</h2>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-user'></i></span>
+                                        <Field type="text" name={"username"} autoComplete="off" required
+                                               onInput={changeInputLogin}/>
+                                        <ErrorMessage name="username" component="div" className="text-danger"/>
+                                        <label>Tên Tài Khoản</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        <Field type="password" autoComplete="off" name={"password"} required
+                                               onInput={changeInputLogin}/>
+                                        <ErrorMessage name="password" component="div" className="text-danger"/>
+                                        <label>Mật Khẩu</label>
+                                    </div>
+                                    <div className="remember-password">
+                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản !</label>
+                                        <a href="#">Quên Mật khẩu</a>
+                                    </div>
+                                    <button className="btn" type={"submit"}>Đăng nhập</button>
+                                    <div className="create-account">
+                                        <p>bạn chưa có tài khoản? <a href="#" className="register-link">Đăng ký</a></p>
+                                    </div>
+                                </Form>
+                            </Formik>
+                        </div>
+                        <div className="form-box register">
+                            <Formik initialValues={
+                                {
+                                    usernameRGT: '',
+                                    passwordRGT: '',
+                                    phone: ''
+                                }
+                            }
+                                    validationSchema={validateSchemaRegister}
+                                    onSubmit={(values) => {
+                                        register().then(console.log(values)).catch();
+                                    }}>
+                                <Form name="Formfill">
+                                    <h2>Đăng ký</h2>
+                                    <p id="result"></p>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-user'></i></span>
+                                        {/*<input type="text" name="Username" autoComplete="off" required/>*/}
+                                        <Field type="text" name={"usernameRGT"} autoComplete="off" required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="usernameRGT" component="div" className="text-danger"/>
+                                        <label>Tên tài khoản</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        {/*<input type="password" name="Password" id="PasswordC" autoComplete="off" required/>*/}
+                                        <Field type="password" autoComplete="off" name={"passwordRGT"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="passwordRGT" component="div" className="text-danger"/>
+                                        <label>Mật khẩu</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-phone'></i></span>
+                                        {/*<input type="email" name="" id="CPassword" autoComplete="off" required/>*/}
+                                        <Field type="text" autoComplete="off" id={"phone"} name={"phone"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="phone" component="div" className="text-danger"/>
+                                        <label htmlFor="phone">Số Diện Thoại</label>
+                                    </div>
+                                    <div className="remember-password">
+                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản và dịch
+                                            vụ</label>
+                                    </div>
+                                    <button className="btn" type={"submit"}>Đăng ký</button>
+                                    <div className="create-account">
+                                        <p>Bạn đã có tài khoản? <a href="#" className="login-link">Đăng nhập</a></p>
+                                    </div>
+                                </Form>
+                            </Formik>
                         </div>
                     </div>
-                </div>
-                <div className="login-section">
-                    <div className="form-box login">
-                        <Formik initialValues={
-                            {
-                                username: '',
-                                password: ''
+                    :
+                    <div style={{marginRight:"100px"}} className="login-section">
+                        <div className="form-box login">
+                            <Formik initialValues={
+                                {
+                                    username: '',
+                                    password: ''
+                                }
                             }
-                        }
-                                validationSchema={validateSchemaLogin}
-                                onSubmit={(values) => {
-                                    loginIn().then(console.log(values)).catch();
-                                }}>
-                            <Form>
-                                <h2>Đăng nhập</h2>
-                                <div className="input-box">
-                                    <span className="icon"><i className='bx bxs-user'></i></span>
-                                    <Field type="text" name={"username"} autoComplete="off" required
-                                           onInput={changeInputLogin}/>
-                                    <ErrorMessage name="username" component="div" className="text-danger"/>
-                                    <label>Tên Tài Khoản</label>
-                                </div>
-                                <div className="input-box">
-                                    <span className="icon"><i className='bx bxs-lock-alt'></i></span>
-                                    <Field type="password" autoComplete="off" name={"password"} required
-                                           onInput={changeInputLogin}/>
-                                    <ErrorMessage name="password" component="div" className="text-danger"/>
-                                    <label>Mật Khẩu</label>
-                                </div>
-                                <div className="remember-password">
-                                    <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản !</label>
-                                    <a href="#">Quên Mật khẩu</a>
-                                </div>
-                                <button className="btn" type={"submit"}>Đăng nhập</button>
-                                <div className="create-account">
-                                    <p>bạn chưa có tài khoản? <a href="#" className="register-link">Đăng ký</a></p>
-                                </div>
-                            </Form>
-                        </Formik>
-                    </div>
-                    <div className="form-box register">
-                        <Formik initialValues={
-                            {
-                                usernameRGT: '',
-                                passwordRGT: '',
-                                phone: ''
+                                    validationSchema={validateSchemaLogin}
+                                    onSubmit={(values) => {
+                                        loginIn().then(console.log(values)).catch();
+                                    }}>
+                                <Form>
+                                    <h2>Đăng nhập</h2>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-user'></i></span>
+                                        <Field type="text" name={"username"} autoComplete="off" required
+                                               onInput={changeInputLogin}/>
+                                        <ErrorMessage name="username" component="div" className="text-danger"/>
+                                        <label>Tên Tài Khoản</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        <Field type="password" autoComplete="off" name={"password"} required
+                                               onInput={changeInputLogin}/>
+                                        <ErrorMessage name="password" component="div" className="text-danger"/>
+                                        <label>Mật Khẩu</label>
+                                    </div>
+                                    <div className="remember-password">
+                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản !</label>
+                                        <a href="#">Quên Mật khẩu</a>
+                                    </div>
+                                    <button className="btn" type={"submit"}>Đăng nhập</button>
+                                    <div className="create-account">
+                                        <p>bạn chưa có tài khoản? <a href="#" className="register-link">Đăng ký</a></p>
+                                    </div>
+                                </Form>
+                            </Formik>
+                        </div>
+                        <div className="form-box register">
+                            <Formik initialValues={
+                                {
+                                    usernameRGT: '',
+                                    passwordRGT: '',
+                                    phone: ''
+                                }
                             }
-                        }
-                                validationSchema={validateSchemaRegister}
-                                onSubmit={(values) => {
-                                    register().then(console.log(values)).catch();
-                                }}>
-                            <Form name="Formfill">
-                                <h2>Đăng ký</h2>
-                                <p id="result"></p>
-                                <div className="input-box">
-                                    <span className="icon"><i className='bx bxs-user'></i></span>
-                                    {/*<input type="text" name="Username" autoComplete="off" required/>*/}
-                                    <Field type="text" name={"usernameRGT"} autoComplete="off" required
-                                           onInput={changeInputRGT}/>
-                                    <ErrorMessage name="usernameRGT" component="div" className="text-danger"/>
-                                    <label>Tên tài khoản</label>
-                                </div>
-                                <div className="input-box">
-                                    <span className="icon"><i className='bx bxs-lock-alt'></i></span>
-                                    {/*<input type="password" name="Password" id="PasswordC" autoComplete="off" required/>*/}
-                                    <Field type="password" autoComplete="off" name={"passwordRGT"} required
-                                           onInput={changeInputRGT}/>
-                                    <ErrorMessage name="passwordRGT" component="div" className="text-danger"/>
-                                    <label>Mật khẩu</label>
-                                </div>
-                                <div className="input-box">
-                                    <span className="icon"><i className='bx bxs-phone'></i></span>
-                                    {/*<input type="email" name="" id="CPassword" autoComplete="off" required/>*/}
-                                    <Field type="text" autoComplete="off" id={"phone"} name={"phone"} required
-                                           onInput={changeInputRGT}/>
-                                    <ErrorMessage name="phone" component="div" className="text-danger"/>
-                                    <label htmlFor="phone">Số Diện Thoại</label>
-                                </div>
-                                <div className="remember-password">
-                                    <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản và dịch vụ</label>
-                                </div>
-                                <button className="btn" type={"submit"}>Đăng ký</button>
-                                <div className="create-account">
-                                    <p>Bạn đã có tài khoản? <a href="#" className="login-link">Đăng nhập</a></p>
-                                </div>
-                            </Form>
-                        </Formik>
-                    </div>
-                </div>
+                                    validationSchema={validateSchemaRegister}
+                                    onSubmit={(values) => {
+                                        register().then(console.log(values)).catch();
+                                    }}>
+                                <Form name="Formfill">
+                                    <h2>Đăng ký</h2>
+                                    <p id="result"></p>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-user'></i></span>
+                                        {/*<input type="text" name="Username" autoComplete="off" required/>*/}
+                                        <Field type="text" name={"usernameRGT"} autoComplete="off" required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="usernameRGT" component="div" className="text-danger"/>
+                                        <label>Tên tài khoản</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        {/*<input type="password" name="Password" id="PasswordC" autoComplete="off" required/>*/}
+                                        <Field type="password" autoComplete="off" name={"passwordRGT"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="passwordRGT" component="div" className="text-danger"/>
+                                        <label>Mật khẩu</label>
+                                    </div>
+                                    <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-phone'></i></span>
+                                        {/*<input type="email" name="" id="CPassword" autoComplete="off" required/>*/}
+                                        <Field type="text" autoComplete="off" id={"phone"} name={"phone"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="phone" component="div" className="text-danger"/>
+                                        <label htmlFor="phone">Số Diện Thoại</label>
+                                    </div>
+                                    <div className="remember-password">
+                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản và dịch
+                                            vụ</label>
+                                    </div>
+                                    <button className="btn" type={"submit"}>Đăng ký</button>
+                                    <div className="create-account">
+                                        <p>Bạn đã có tài khoản? <a href="#" className="login-link">Đăng nhập</a></p>
+                                    </div>
+                                </Form>
+                            </Formik>
+                        </div>
+                    </div>}
             </div>
             <Modal
                 isOpen={modalIsOpen}
@@ -273,7 +385,7 @@ const Login = () => {
             >
                 <div style={{display: "flex"}}>
                     <button onClick={() => loginUser()} className={"button-admin-and-user-123"}
-                            style={{height: "45px", marginLeft: "0px" }}>
+                            style={{height: "45px", marginLeft: "0px"}}>
                         Người dùng
                         <div className="arrow-wrapper">
                             <div className="arrow"></div>

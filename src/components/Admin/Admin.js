@@ -395,7 +395,7 @@ const Admin = () => {
                             }}
                     >Tạo Phòng
                     </button>
-                    <div>
+                    <div style={{marginTop:"5px"}}>
                         <button className={"button-header-admin"}
                                 style={{marginLeft: "10px", height: "30px", color: "white", backgroundColor: "#f72d7a"}}
                                 onClick={() => extraPointInUser()}>
@@ -406,14 +406,16 @@ const Admin = () => {
                                 onClick={() => minusPointsInUser()}>
                             trừ điểm
                         </button>
-                        <input className={"inputCreateRoom"} id={"input-username-point"}
-                               style={{marginLeft: "10px", width: "23%", height: "25px"}} type="text"
-                               placeholder={"nhập tên người dùng ...!"}/>
-                        <input className={"inputCreateRoom"} id={"input-point"}
-                               style={{marginLeft: "10px", width: "30%", height: "25px"}} type="number"
-                               placeholder={"nhập số điểm ...!"}/>
+                        <div style={{width:"100%",display :"flex"}}>
+                            <input className={"inputCreateRoom"} id={"input-username-point"}
+                                   style={{marginLeft: "10px", width: "23%", height: "25px"}} type="text"
+                                   placeholder={"nhập tên người dùng ...!"}/>
+                            <input className={"inputCreateRoom"} id={"input-point"}
+                                   style={{marginLeft: "10px", width: "30%", height: "25px"}} type="number"
+                                   placeholder={"nhập số điểm ...!"}/>
+                        </div>
                     </div>
-                    <div style={{display: "block"}}>
+                    <div style={{display: "block",marginTop:"5px",marginLeft:"10px"}}>
                         <div style={{width: "100%", display: "flex"}}>
                             <div style={{display: "block"}}>
                                 <div style={{display: "flex"}}>
@@ -438,7 +440,7 @@ const Admin = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{width: "30px", marginTop: "10x", marginLeft: "20px"}}>
+                <div style={{width: "30px",marginBottom:"50px"}}>
                     <button onClick={() => logout()}
                             style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "25px"}}>
                 <span className="icon" style={{color: "white", textAlign: "center", backgroundColor: "#f72d7a"}}>
@@ -699,7 +701,7 @@ const Admin = () => {
                 onRequestClose={closeModal}
                 style={{
                     content: {
-                        width: "27%",
+                        width: windowWidth>800 ?  "27%":"100%",
                         height: "27%",
                         top: "50%",
                         left: "50%",
