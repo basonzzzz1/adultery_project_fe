@@ -107,7 +107,8 @@ th {
 
 /*==================================================*/
 .container-chat-box {
-    max-width: 1170px;
+    /*max-width: 1170px;*/
+    width: 100%;
     margin: auto;
 }
 
@@ -319,6 +320,9 @@ img {
 .msg_history {
     height: 516px;
     overflow-y: auto;
+    width: auto;
+    overflow-x: hidden;
+    display: inline-block;
 }
 
 /*=================================================================*/

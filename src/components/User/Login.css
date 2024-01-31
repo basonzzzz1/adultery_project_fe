@@ -76,7 +76,7 @@
 .search-bar button i{
     font-size: 22px;
 }
-.container{
+.container-login{
     position: absolute;
     left: 50%;
     top: 50%;
@@ -128,7 +128,7 @@
 .social-icon a:hover i{
     transform: scale(1.2);
 }
-.container .login-section{
+.container-login .login-section{
     position: absolute;
     top: 0;
     right: 0;
@@ -148,7 +148,7 @@
 
 }
 .login-section .form-box.register{
-    transform: translateX(430px);
+    transform: translateX(445px);
     transition: transform .6s ease;
     transition-delay: 0s;
 }
@@ -163,7 +163,7 @@
     transition-delay: 0.7s;
 }
 .login-section.active .form-box.login{
-    transform: translateX(430px);
+    transform: translateX(500px);
     transition-delay: 0s;
 }
 

@@ -383,8 +383,18 @@ const Admin = () => {
 
     return (
         <div style={responsiveStyles.container}>
-            <div id={"body-admin-template"} style={{...responsiveStyles.header, marginBottom: '10px'}}>
-                <div id={"body-admin-1"} style={{width: "95%", marginTop: "20px", display: windowWidth>800 ?"flex":"block"}}>
+            <div id={"body-admin-template"} style={{
+                display: 'flex',
+                width: "100%",
+                backgroundColor: '#f72d7a',
+                padding: '10px',
+                position: "fixed",
+                top: "0",
+                zIndex: "130",
+                marginBottom: '10px'
+            }}>
+                <div id={"body-admin-1"}
+                     style={{width: "95%", marginTop: "20px", display: windowWidth > 800 ? "flex" : "block"}}>
                     <button className={"button-header-admin"} onClick={() => openModal()}
                             style={{
                                 marginLeft: "10px",
@@ -395,7 +405,7 @@ const Admin = () => {
                             }}
                     >Tạo Phòng
                     </button>
-                    <div style={{marginTop:"5px"}}>
+                    <div style={{marginTop: "5px"}}>
                         <button className={"button-header-admin"}
                                 style={{marginLeft: "10px", height: "30px", color: "white", backgroundColor: "#f72d7a"}}
                                 onClick={() => extraPointInUser()}>
@@ -406,7 +416,7 @@ const Admin = () => {
                                 onClick={() => minusPointsInUser()}>
                             trừ điểm
                         </button>
-                        <div style={{width:"100%",display :"flex"}}>
+                        <div style={{width: "100%", display: "flex"}}>
                             <input className={"inputCreateRoom"} id={"input-username-point"}
                                    style={{marginLeft: "10px", width: "23%", height: "25px"}} type="text"
                                    placeholder={"nhập tên người dùng ...!"}/>
@@ -415,7 +425,7 @@ const Admin = () => {
                                    placeholder={"nhập số điểm ...!"}/>
                         </div>
                     </div>
-                    <div style={{display: "block",marginTop:"5px",marginLeft:"10px"}}>
+                    <div style={{display: "block", marginTop: "5px", marginLeft: "10px"}}>
                         <div style={{width: "100%", display: "flex"}}>
                             <div style={{display: "block"}}>
                                 <div style={{display: "flex"}}>
@@ -440,7 +450,7 @@ const Admin = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{width: "30px",marginBottom:"50px"}}>
+                <div style={{width: "30px", marginBottom: "50px"}}>
                     <button onClick={() => logout()}
                             style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "25px"}}>
                 <span className="icon" style={{color: "white", textAlign: "center", backgroundColor: "#f72d7a"}}>
@@ -449,80 +459,100 @@ const Admin = () => {
                     </button>
                 </div>
             </div>
-            <div id={"body-admin-999"} style={{width: "100%", display: "block", justifyContent: "center"}}>
-                <div style={{width: "99%", height: "350px"}}>
-                    <div id={"management-user-h2"} style={{width: "100%", marginLeft:windowWidth>800 ?"40%":"20%"}}>
+            <div id={"body-admin-999"}
+                 style={{marginTop: "200px", width: "100%", display: "block", justifyContent: "center"}}>
+                <div style={{width: "100%", height: "350px"}}>
+                    <div id={"management-user-h2"}
+                         style={{width: "100%", marginLeft: windowWidth > 800 ? "40%" : "20%"}}>
                         <h2>Quản lý tài khoản</h2>
                         <p>Độ rộng của màn hình: {windowWidth}</p>
                     </div>
                     <div id={"management-user-table"}
-                         style={{width: "100%", height: "300px", overflowY: "scroll", marginLeft:windowWidth>800 ?"25%":"0%"}}>
-                        <thead>
-                        <tr>
-                            <th>Id Tài khoản</th>
-                            <th>Tên Tài khoản</th>
-                            <th>Trạng thái</th>
-                            <th>Banner</th>
-                            <th>Điểm</th>
-                            <th>Quyền hạn</th>
-                            <th>Vòng quay</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {listUser.map((u) => (<tr>
-                            <td>{u.id}</td>
-                            <td>{u.username}</td>
-                            {u.online ? <td style={{textAlign: "center"}}>
-                                <div style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    backgroundColor: "#7cff5e",
-                                    borderRadius: "50%",
-                                    marginLeft: "30px"
-                                }}></div>
-                            </td> : <td>
-                                <div style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    backgroundColor: "gray",
-                                    borderRadius: "50%",
-                                    marginLeft: "30px"
-                                }}></div>
-                            </td>}
-                            <td>
-                                <label className="switch">
-                                    <input id={"checkbox-value" + u.id} checked={u.banned} type="checkbox"
-                                           onClick={() => banner(u)}/>
-                                    <span className="slider"></span>
-                                </label>
-                            </td>
-                            <td>{u.point}</td>
-                            <td>
-                                {u.roles.map((role) => (role.name === "ROLE_ADMIN" ?
-                                    <p key={role.name}>Quản lý</p> : <p key={role.name}>Người dùng</p>))}
-                            </td>
-                            <td style={{display: "flex"}}>
-                                <p id={"p-spin" + u.id} style={{position: ""}}>{u.spin}</p>
-                                <input id={"inputSpin" + u.id} style={{width: "50px", textAlign: "center"}}
-                                       onChange={handleSpinInputChange} onClick={() => pSpin(u.id)}/>
-                                <button className="edit-button" style={{
-                                    backgroundColor: "yellow",
-                                    marginLeft: "5px",
-                                    borderRadius: "5px",
-                                    border: "2px solid gray"
-                                }} onClick={() => editSpin(u)}>
-                                    <i className="fa fa-save"></i>
-                                </button>
-                            </td>
-                        </tr>))}
-                        </tbody>
+                         style={{
+                             height: "300px",
+                             marginLeft: windowWidth > 800 ? "25%" : "0%",
+                             overflowY: "scroll",
+                             display: "inline-block",
+                             width: "auto",
+                             overflowX: "hidden"
+                         }}>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Id Tài khoản</th>
+                                <th>Tên Tài khoản</th>
+                                <th>Trạng thái</th>
+                                <th>Banner</th>
+                                <th>Điểm</th>
+                                <th>Quyền hạn</th>
+                                <th>Vòng quay</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {listUser.map((u) => (<tr>
+                                <td>{u.id}</td>
+                                <td>{u.username}</td>
+                                {u.online ? <td style={{textAlign: "center"}}>
+                                    <div style={{
+                                        width: "10px",
+                                        height: "10px",
+                                        backgroundColor: "#7cff5e",
+                                        borderRadius: "50%",
+                                        marginLeft: "30px"
+                                    }}></div>
+                                </td> : <td>
+                                    <div style={{
+                                        width: "10px",
+                                        height: "10px",
+                                        backgroundColor: "gray",
+                                        borderRadius: "50%",
+                                        marginLeft: "30px"
+                                    }}></div>
+                                </td>}
+                                <td>
+                                    <label className="switch">
+                                        <input id={"checkbox-value" + u.id} checked={u.banned} type="checkbox"
+                                               onClick={() => banner(u)}/>
+                                        <span className="slider"></span>
+                                    </label>
+                                </td>
+                                <td>{u.point}</td>
+                                <td>
+                                    {u.roles.map((role) => (role.name === "ROLE_ADMIN" ?
+                                        <p key={role.name}>Quản lý</p> : <p key={role.name}>Người dùng</p>))}
+                                </td>
+                                <td style={{display: "flex"}}>
+                                    <p id={"p-spin" + u.id} style={{position: ""}}>{u.spin}</p>
+                                    <input id={"inputSpin" + u.id} style={{width: "50px", textAlign: "center"}}
+                                           onChange={handleSpinInputChange} onClick={() => pSpin(u.id)}/>
+                                    <button className="edit-button" style={{
+                                        backgroundColor: "yellow",
+                                        marginLeft: "5px",
+                                        borderRadius: "5px",
+                                        border: "2px solid gray"
+                                    }} onClick={() => editSpin(u)}>
+                                        <i className="fa fa-save"></i>
+                                    </button>
+                                </td>
+                            </tr>))}
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
 
-                <div style={{width: "99%", height: "380px",marginTop:"30px",marginLeft:windowWidth>800 ?"20%":"0%"}}>
-                    <div style={{width: "100%", marginLeft:windowWidth>800 ?"20%":"25%"}}>
+                <div style={{
+                    width: "99%",
+                    height: "380px",
+                    marginTop: "30px",
+                    marginLeft: windowWidth > 800 ? "20%" : "0%"
+                }}>
+                    <div style={{width: "100%", marginLeft: windowWidth > 800 ? "20%" : "25%"}}>
                         <h2>Quản lý phòng chat</h2>
                     </div>
+                    <table>
+
+                    </table>
                     <thead>
                     <tr>
                         <th>Id Phòng</th>
@@ -559,103 +589,101 @@ const Admin = () => {
                     ))}
                     </tbody>
                 </div>
-                <div style={{width: "100%", height: "800px"}}>
-                    <div>
-                        <div className="container-chat-box">
-                            <h3 className="text-center">Cskh</h3>
-                            <div className="messaging">
-                                <div className="inbox_msg">
-                                    <div className="inbox_people">
-                                        <div className="headind_srch">
-                                            <div className="srch_bar">
-                                                <div className="stylish-input-group"
-                                                     style={{width: "100%", display: "flex"}}>
-                                                    <input type="text" style={{width: "100%"}}
-                                                           className="search-bar"
-                                                           placeholder="Tìm kiếm "/>
-                                                    <span className="input-group-addon">
+                <div style={{width: "100%", height: "800px",marginTop:"150px"}}>
+                    <div className="container-chat-box" style={{width: windowWidth > 800 ? "100%":"160%", margin: "0 auto",}}>
+                        <h3 className="text-center">Cskh</h3>
+                        <div className="messaging">
+                            <div className="inbox_msg">
+                                <div className="inbox_people">
+                                    <div className="headind_srch">
+                                        <div className="srch_bar">
+                                            <div className="stylish-input-group"
+                                                 style={{width: "100%", display: "flex"}}>
+                                                <input type="text" style={{width: "100%"}}
+                                                       className="search-bar"
+                                                       placeholder="Tìm kiếm "/>
+                                                <span className="input-group-addon">
                                                       <button type="button" style={{marginTop: "10px"}}>
                                                           <i className="fa fa-search" aria-hidden="true"></i>
                                                       </button>
                                                 </span>
-                                                </div>
                                             </div>
                                         </div>
-                                        <div className="inbox_chat">
-                                            {listCskh.map((c) => (
-                                                <div key={c.id} className="chat_list" onClick={() => cskhInUser(c)}>
-                                                    <div className="chat_people">
-                                                        <div className="chat_ib">
-                                                            <h5>
-                                                                {c.fromUser.username == user.username ? (
-                                                                    <>
-                                                                        {c.toUser.username}
-                                                                        <span
-                                                                            className="chat_date">{calculateTimeChat(c.createAt)}</span>
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        {c.fromUser.username}
-                                                                        <span
-                                                                            className="chat_date">{calculateTimeChat(c.createAt)}</span>
-                                                                    </>
-                                                                )}
-                                                            </h5>
-                                                            <p>{c.content}</p>
-                                                        </div>
+                                    </div>
+                                    <div className="inbox_chat">
+                                        {listCskh.map((c) => (
+                                            <div key={c.id} className="chat_list" onClick={() => cskhInUser(c)}>
+                                                <div className="chat_people">
+                                                    <div className="chat_ib">
+                                                        <h5>
+                                                            {c.fromUser.username == user.username ? (
+                                                                <>
+                                                                    {c.toUser.username}
+                                                                    <span
+                                                                        className="chat_date">{calculateTimeChat(c.createAt)}</span>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {c.fromUser.username}
+                                                                    <span
+                                                                        className="chat_date">{calculateTimeChat(c.createAt)}</span>
+                                                                </>
+                                                            )}
+                                                        </h5>
+                                                        <p>{c.content}</p>
                                                     </div>
                                                 </div>
-                                            ))}
+                                            </div>
+                                        ))}
 
-                                        </div>
                                     </div>
-                                    <div className="mesgs">
-                                        <div className="msg_history">
-                                            {listCskhInUser.length == 0 ? (
-                                                <div style={{width: "100%", height: "100%", textAlign: "center"}}>
-                                                    <h4 style={{marginTop: "150px", color: "gray"}}>Hãy chọn người
-                                                        dùng
-                                                        muốn
-                                                        nhắn tin!</h4>
-                                                </div>
-                                            ) : (
-                                                listCskhInUser.map((m, index) => (
-                                                    <div key={index}>
-                                                        {m.fromUser.username !== user.username ? (
-                                                            <div className="incoming_msg"
-                                                                 style={{display: "block"}}>
-                                                                <p>{m.fromUser.username}</p>
-                                                                <div className="received_msg">
-                                                                    <div className="received_withd_msg">
-                                                                        <p>{m.content}</p>
-                                                                        <span
-                                                                            className="time_date">{calculateTimeChat(m.createAt)}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="outgoing_msg">
-                                                                <div className="sent_msg">
+                                </div>
+                                <div className="mesgs">
+                                    <div className="msg_history">
+                                        {listCskhInUser.length == 0 ? (
+                                            <div style={{width: "100%", height: "100%", textAlign: "center"}}>
+                                                <h4 style={{marginTop: "150px", color: "gray"}}>Hãy chọn người
+                                                    dùng
+                                                    muốn
+                                                    nhắn tin!</h4>
+                                            </div>
+                                        ) : (
+                                            listCskhInUser.map((m, index) => (
+                                                <div key={index}>
+                                                    {m.fromUser.username !== user.username ? (
+                                                        <div className="incoming_msg"
+                                                             style={{display: "block"}}>
+                                                            <p>{m.fromUser.username}</p>
+                                                            <div className="received_msg">
+                                                                <div className="received_withd_msg">
                                                                     <p>{m.content}</p>
                                                                     <span
                                                                         className="time_date">{calculateTimeChat(m.createAt)}</span>
                                                                 </div>
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                ))
-                                            )}
-                                            {/*{listCskhInUser.length == 0 ? <></>:scrollAuto()}*/}
-                                        </div>
-                                        <div className="type_msg">
-                                            <div className="input_msg_write">
-                                                <input type="text" id={"cskh-content"} className="write_msg"
-                                                       placeholder="Nhập văn bản !"/>
-                                                <button className="msg_send_btn" type="button"
-                                                        onClick={() => createCskhAdmin()}>
-                                                    <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="outgoing_msg">
+                                                            <div className="sent_msg">
+                                                                <p>{m.content}</p>
+                                                                <span
+                                                                    className="time_date">{calculateTimeChat(m.createAt)}</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))
+                                        )}
+                                        {/*{listCskhInUser.length == 0 ? <></>:scrollAuto()}*/}
+                                    </div>
+                                    <div className="type_msg">
+                                        <div className="input_msg_write">
+                                            <input type="text" id={"cskh-content"} className="write_msg"
+                                                   placeholder="Nhập văn bản !"/>
+                                            <button className="msg_send_btn" type="button"
+                                                    onClick={() => createCskhAdmin()}>
+                                                <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -663,7 +691,7 @@ const Admin = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{width: "100%", border: "1px solid black"}}>
+                <div style={{width: windowWidth > 800 ? "100%":"160%", border: "1px solid black"}}>
                     <div style={{textAlign: "center"}}>
                         <h3>đổi tiền !</h3>
                     </div>
@@ -701,7 +729,7 @@ const Admin = () => {
                 onRequestClose={closeModal}
                 style={{
                     content: {
-                        width: windowWidth>800 ?  "27%":"100%",
+                        width: windowWidth > 800 ? "27%" : "100%",
                         height: "27%",
                         top: "50%",
                         left: "50%",

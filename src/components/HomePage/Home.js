@@ -157,27 +157,26 @@ const Home = () => {
         // -------------------------------------------------------------------------- code anh đạt
         useEffect(() => {
             ManageService.getListValueSpin().then((response) => {
-              setListValueSpin(response.data)
+                setListValueSpin(response.data)
             }).catch((err) => {
                 console.log(err)
             })
         }, [load]);
-    const theWheel = new winwheel.Winwheel({
-        'numSegments': 8,
-        'outerRadius': 212,
-        'textFontSize': 28,
-        'segments': listValueSpin?.map(value => ({
-            'fillStyle': value.id % 2 === 0 ? 'red' : '#eae56f',
-            'text': `${value?.val}`
-        })) || [],
-        'animation': {
-            'type': 'spinToStop', 'duration': 5, 'spins': 8, 'callbackFinished': alertPrize
-        }
-    });
+        const theWheel = new winwheel.Winwheel({
+            'numSegments': 8,
+            'outerRadius': 212,
+            'textFontSize': 28,
+            'segments': listValueSpin?.map(value => ({
+                'fillStyle': value.id % 2 === 0 ? 'red' : '#eae56f',
+                'text': `${value?.val}`
+            })) || [],
+            'animation': {
+                'type': 'spinToStop', 'duration': 5, 'spins': 8, 'callbackFinished': alertPrize
+            }
+        });
 
 
-
-    const canSpinToday = () => {
+        const canSpinToday = () => {
             let lastSpinTime = localStorage.getItem('lastSpinTime');
             if (!lastSpinTime) return true; // No last spin time, allow spin
             let oneDayInMillis = 10 * 1000;
@@ -349,274 +348,304 @@ const Home = () => {
                 return Math.floor(timeDiff / 31536000000) + " năm trước";
             }
         }
-    const createExchangePoints = () => {
-        const bankName = document.getElementById("BankName").value;
-        const bankCode = document.getElementById("BankCode").value;
-        const bankPoint = document.getElementById("BankPoint").value;
-        const bankContent = document.getElementById("BankContent").value;
 
-        if (bankName != "" && bankCode != "" && bankPoint != "") {
-            const exchangePoints = {
-                username: user.username,
-                point: bankPoint,
-                bankCode: bankCode,
-                bankName: bankName,
-                content:bankContent
-            };
+        const createExchangePoints = () => {
+            const bankName = document.getElementById("BankName").value;
+            const bankCode = document.getElementById("BankCode").value;
+            const bankPoint = document.getElementById("BankPoint").value;
+            const bankContent = document.getElementById("BankContent").value;
 
-            ManageService.createExchangePoints(exchangePoints)
-                .then((response) => {
-                    alert("Thành công và đợi phản hồi !");
-                    document.getElementById("BankName").value = "";
-                    document.getElementById("BankCode").value = "";
-                    document.getElementById("BankPoint").value = "";
-                    document.getElementById("BankContent").value = "";
-                })
-                .catch((err) => {
-                    toast.warning("Không thành công !");
-                    console.log(err);
-                });
-        } else {
-            toast.warning("Bạn chưa nhập đủ các trường dữ liệu");
-        }
-    };
+            if (bankName != "" && bankCode != "" && bankPoint != "") {
+                const exchangePoints = {
+                    username: user.username,
+                    point: bankPoint,
+                    bankCode: bankCode,
+                    bankName: bankName,
+                    content: bankContent
+                };
+
+                ManageService.createExchangePoints(exchangePoints)
+                    .then((response) => {
+                        alert("Thành công và đợi phản hồi !");
+                        document.getElementById("BankName").value = "";
+                        document.getElementById("BankCode").value = "";
+                        document.getElementById("BankPoint").value = "";
+                        document.getElementById("BankContent").value = "";
+                    })
+                    .catch((err) => {
+                        toast.warning("Không thành công !");
+                        console.log(err);
+                    });
+            } else {
+                toast.warning("Bạn chưa nhập đủ các trường dữ liệu");
+            }
+        };
 
 
-    useEffect(() => {
+        useEffect(() => {
             let objDiv = document.getElementById("scroll-div-chat-admin");
             if (objDiv) {
                 objDiv.scrollTop = objDiv.scrollHeight;
             }
         }, [load]);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-        return (<div>
-            <div style={{display: "flex", backgroundColor: "#f72d7a", height: "100px"}}>
-                <div style={{width: "80%", display: "flex"}}>
-                    <div id={"div-header-img"} style={{width: "85%" ,display :"flex"}}>
-                       <div style={ {width :"85%"}}>
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+    };
 
-                       </div>
-                    </div>
-                    <div style={{width: "180px", height: "50px", marginTop: "30px", display: "block"}}>
-                        <h4 style={{marginTop: "0px"}}>{user.username}</h4>
-                        <p style={{marginTop: "0px", marginLeft: "5px"}}>point :{user.point}</p>
-                    </div>
-                </div>
-                <div>
-                    <div className="group" style={{display: "flex", height: "25px", marginTop: "30px"}}>
-                        <svg onClick={() => findByChatRoomId()}
-                             style={{position: "absolute", left: "1rem", fill: "#9e9ea7", width: "1rem", height: "1trem"}}
-                             aria-hidden="true" viewBox="0 0 24 24">
-                            <g>
-                                <path
-                                    d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
-                            </g>
-                        </svg>
-                        <input id={"idChatRoom"} placeholder="Search" type="search" className="idChatRoom"/>
-                    </div>
-                    <button onClick={()=>setModalBankIsOpen(true)} style={{backgroundColor: "#f72d7a", border: "2px solid grey", marginTop: "15px", color :"white",width:"190px"}}>
-                        đổi điểm
-                    </button>
-                </div>
-                <div style={{width: "30px", marginTop: "10x", marginLeft: "15px"}}>
-                    <button onClick={() => logout()}
-                            style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "25px"}}>
-                <span className="icon" style={{color: "white", textAlign: "center", backgroundColor: "#f72d7a"}}>
-                <i style={{fontSize: "30px", border: "1px solid gray"}} className='bx bxs-exit'></i>
-                </span>
-                    </button>
-                </div>
-            </div>
-            <div style={{width: "100%", display: "flex"}}>
-                <div id={"div-luckySpin-body"}>
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+        return (
+            <div>
+                <div id={"header-home"} style={{display: "flex", backgroundColor: "#f72d7a", height: "100px" ,width:"100%",position :"fixed",top:"0",zIndex:"100"}}>
+                    <div style={{width: "80%", display: "flex"}}>
+                        <div id={"div-header-img"} style={{width: "85%", display: "flex"}}>
+                            <div style={{width: "85%"}}>
 
-                </div>
-                <div style={{width: "40%", textAlign: "center"}}>
-                    <div id={"div-lucky-spin-header"}>
-                        <h1 style={{color: '#ef6f6f', width: "100%"}}>Vòng quay may mắn</h1>
-                        <p>Bạn có {user.countSpin} lượt quay </p>
+                            </div>
+                        </div>
+                        <div style={{width: "180px", height: "50px", marginTop: "30px", display: "block"}}>
+                            <h4 style={{marginTop: "0px"}}>{user.username}</h4>
+                            <p style={{marginTop: "0px", marginLeft: "5px"}}>point :{user.point}</p>
+                        </div>
                     </div>
-                    <div className="power_controls">
-                        <div id="time_remaining"
-                            // style={{ display: timeRemainingVisible ? setTimeRemainingVisible('block') : setTimeRemainingVisible('none')}}
-                        ></div>
+                    <div>
+                        <div className="group" style={{display: "flex", height: "25px", marginTop: "30px"}}>
+                            <svg onClick={() => findByChatRoomId()}
+                                 style={{
+                                     position: "absolute",
+                                     left: "1rem",
+                                     fill: "#9e9ea7",
+                                     width: "1rem",
+                                     height: "1trem"
+                                 }}
+                                 aria-hidden="true" viewBox="0 0 24 24">
+                                <g>
+                                    <path
+                                        d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                                </g>
+                            </svg>
+                            <input id={"idChatRoom"} placeholder="Search" type="search" className="idChatRoom"/>
+                        </div>
+                        <button onClick={() => setModalBankIsOpen(true)} style={{
+                            backgroundColor: "#f72d7a",
+                            border: "2px solid grey",
+                            marginTop: "15px",
+                            color: "white",
+                            width: "190px"
+                        }}>
+                            đổi điểm
+                        </button>
                     </div>
-                    <table style={{border: "hidden", marginTop: "80px", width: "400px", marginLeft: "25px"}}>
-                        <tbody>
-                        <tr>
-                            <td
-                                className="the_wheel"
-                                align="center"
-                                valign="center"
-                                style={{border: "hidden", height: "500px"}}
-                            >
-                                <canvas id="canvas" width="434" height="434">
-                                    <p style={{color: 'white'}} align="center">
-                                        Sorry, your browser doesn't support canvas. Please try another.
-                                    </p>
-                                </canvas>
-                                <button
-                                    id="spin_button"
-                                    style={{border: "hidden", width: "100px", height: "50px"}}
-                                    onClick={() => trySpin()}
-                                ><span>Quay</span>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div style={{width: "30px", marginTop: "10x", marginLeft: "15px"}}>
+                        <button onClick={() => logout()}
+                                style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "25px"}}>
+                           <span className="icon"
+                                 style={{color: "white", textAlign: "center", backgroundColor: "#f72d7a"}}>
+                               <i style={{fontSize: "30px", border: "1px solid gray"}} className='bx bxs-exit'></i>
+                           </span>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={{
-                    content: {
-                        width: "300px",
-                        height: "80px",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        overlay: {
-                            backgroundColor: "rgba(0,0,0,0)",
+                <div style={{width: "100%", display: "flex",marginTop:"100px"}}>
+                    <div id={"div-luckySpin-body"}>
+
+                    </div>
+                    <div style={{width:windowWidth > 800 ?"40%":"100%", textAlign: "center"}}>
+                        <div id={"div-lucky-spin-header"}>
+                            <h1 style={{color: '#ef6f6f', width: "100%"}}>Vòng quay may mắn</h1>
+                            <p>Bạn có {user.countSpin} lượt quay </p>
+                        </div>
+                        <div className="power_controls">
+                            <div id="time_remaining"
+                                // style={{ display: timeRemainingVisible ? setTimeRemainingVisible('block') : setTimeRemainingVisible('none')}}
+                            ></div>
+                        </div>
+                        <table style={{border: "hidden", marginTop: "80px", width: "400px", marginLeft: "25px"}}>
+                            <tbody>
+                            <tr>
+                                <td
+                                    className="the_wheel"
+                                    align="center"
+                                    valign="center"
+                                    style={{border: "hidden", height: "500px"}}
+                                >
+                                    <canvas id="canvas" width="434" height="434">
+                                        <p style={{color: 'white'}} align="center">
+                                            Sorry, your browser doesn't support canvas. Please try another.
+                                        </p>
+                                    </canvas>
+                                    <button
+                                        id="spin_button"
+                                        style={{border: "hidden", width: "100px", height: "50px"}}
+                                        onClick={() => trySpin()}
+                                    ><span>Quay</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={{
+                        content: {
+                            width: "300px",
+                            height: "80px",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            overlay: {
+                                backgroundColor: "rgba(0,0,0,0)",
+                            },
+                            border: "1px solid black",
+                            scroll: "none",
+                            overflow: "hidden",
+                            backgroundColor: "#f72d7a"
                         },
-                        border: "1px solid black",
-                        scroll: "none",
-                        overflow: "hidden",
-                        backgroundColor: "#f72d7a"
-                    },
-                }}
-                id="id"
-            >
-                <div style={{display: "flex"}}>
-                    <div className="group">
-                        <input id={"passwordChatRoom"} style={{height: "30px"}} placeholder="password ... !"
-                               type="password" className="idChatRoom"/>
+                    }}
+                    id="id"
+                >
+                    <div style={{display: "flex"}}>
+                        <div className="group">
+                            <input id={"passwordChatRoom"} style={{height: "30px"}} placeholder="password ... !"
+                                   type="password" className="idChatRoom"/>
+                        </div>
+                        {/*<button onClick={()=>checkChatRoom()} style={{marginLeft :"10px"}}>Vào</button>*/}
+                        <button id={"button-svg-123"} style={{height: "35px", marginLeft: "10px"}}
+                                onClick={() => checkChatRoom()}>
+                            Vào
+                            <div className="arrow-wrapper">
+                                <div className="arrow"></div>
+                            </div>
+                        </button>
                     </div>
-                    {/*<button onClick={()=>checkChatRoom()} style={{marginLeft :"10px"}}>Vào</button>*/}
-                    <button id={"button-svg-123"} style={{height: "35px", marginLeft: "10px"}}
-                            onClick={() => checkChatRoom()}>
-                        Vào
-                        <div className="arrow-wrapper">
-                            <div className="arrow"></div>
+                </Modal>
+                {isDivChatAdmin ?
+                    <div id={"div-chat-admin-user"}>
+                        <div style={{
+                            width: "100%",
+                            height: "40px",
+                            backgroundColor: "#f72d7a",
+                            borderTopRightRadius: "8px",
+                            borderTopLeftRadius: "8px",
+                            display: "flex"
+                        }}>
+                            <div style={{width: "93%", textAlign: "center", color: "white"}}>
+                                <h3 style={{marginBottom: "5px"}}>tìm bạn bốn phương </h3>
+                            </div>
+                            <div style={{color: "white", fontSize: "20px", fontWeight: "bold"}}
+                                 onClick={() => setDivChatAdmin()}>_
+                            </div>
                         </div>
-                    </button>
-                </div>
-            </Modal>
-            {isDivChatAdmin ?
-                <div id={"div-chat-admin-user"}>
-                    <div style={{
-                        width: "100%",
-                        height: "40px",
-                        backgroundColor: "#f72d7a",
-                        borderTopRightRadius: "8px",
-                        borderTopLeftRadius: "8px",
-                        display: "flex"
-                    }}>
-                        <div style={{width: "93%", textAlign: "center", color: "white"}}>
-                            <h3 style={{marginBottom: "5px"}}>tìm bạn bốn phương </h3>
-                        </div>
-                        <div style={{color: "white", fontSize: "20px", fontWeight: "bold"}}
-                             onClick={() => setDivChatAdmin()}>_
-                        </div>
-                    </div>
-                    <div style={{
-                        width: "100%",
-                        height: "480px",
-                        borderBottomLeftRadius: "5px",
-                        borderBottomRightRadius: "8px",
-                        backgroundColor: "white"
-                    }}>
-                        <div id={"scroll-div-chat-admin"} style={{overflow: "scroll", height: "430px"}}>
-                            {listCskh.map((c) => (
-                                <div key={c.id}>
-                                    {c.fromUser.username !== user.username ? (
-                                        <div className="incoming_msg" style={{display: "block"}}>
-                                            <div className="received_msg">
-                                                <div className="received_withd_msg">
+                        <div style={{
+                            width: "100%",
+                            height: "480px",
+                            borderBottomLeftRadius: "5px",
+                            borderBottomRightRadius: "8px",
+                            backgroundColor: "white"
+                        }}>
+                            <div id={"scroll-div-chat-admin"} style={{overflow: "scroll", height: "430px"}}>
+                                {listCskh.map((c) => (
+                                    <div key={c.id}>
+                                        {c.fromUser.username !== user.username ? (
+                                            <div className="incoming_msg" style={{display: "block"}}>
+                                                <div className="received_msg">
+                                                    <div className="received_withd_msg">
+                                                        <p>{c.content}</p>
+                                                        <span
+                                                            className="time_date">{calculateTimeChat(c.createAt)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="outgoing_msg">
+                                                <div className="sent_msg">
                                                     <p>{c.content}</p>
                                                     <span
                                                         className="time_date">{calculateTimeChat(c.createAt)}</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="outgoing_msg">
-                                            <div className="sent_msg">
-                                                <p>{c.content}</p>
-                                                <span
-                                                    className="time_date">{calculateTimeChat(c.createAt)}</span>
-                                            </div>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="type_msg">
+                                <div className="input_msg_write">
+                                    <input id={"content-cskh-123"} type="text" className="write_msg"
+                                           placeholder="Nhập văn bản !"
+                                           style={{
+                                               borderBottomRightRadius: "5px",
+                                               borderBottomLeftRadius: "5px",
+                                               border: "1px solid grey"
+                                           }}/>
+                                    <button className="msg_send_btn" type="button" onClick={() => createCskh()}>
+                                        <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
-                        <div className="type_msg">
-                            <div className="input_msg_write">
-                                <input id={"content-cskh-123"} type="text" className="write_msg"
-                                       placeholder="Nhập văn bản !"
-                                       style={{
-                                           borderBottomRightRadius: "5px",
-                                           borderBottomLeftRadius: "5px",
-                                           border: "1px solid grey"
-                                       }}/>
-                                <button className="msg_send_btn" type="button" onClick={() => createCskh()}>
-                                    <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
-                                </button>
                             </div>
                         </div>
-                    </div>
-                </div> : <></>}
+                    </div> : <></>}
 
-            <button className="button-cskh" onClick={() => setDivChatAdmin()}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="46" viewBox="0 0 46 46" height="46" fill="none"
-                     className="svg-icon">
-                    <path strokeWidth="2" strokeLinecap="round" stroke="#fff" fill-rule="evenodd"
-                          d="m14.5037 27.0715c.819-.634 1.7094-1.1699 2.653-1.597.7621-.3521 1.2557-1.1094 1.2699-1.9488-.0073-1.1346.7466-2.1517 1.8673-2.3279 1.7701-.2782 3.5728-.2785 5.3429-.0005 1.1206.1759 1.8744 1.193 1.8669 2.3274.0206.8307.5066 1.5791 1.257 1.9359.981.4173 1.9093.9489 2.7657 1.5838.8765.5876 2.0467.4715 2.791-.2769l2.2507-2.2507c.4294-.4283.6617-1.0157.6414-1.6219-.0308-.5985-.314-1.1559-.7793-1.5337-2.5842-2.0976-5.6309-3.5496-8.888-4.2357-2.9976-.6659-6.1047-.6655-9.1023.0009-3.2453.7041-6.2835 2.1503-8.87655 4.2253l-.12568.1256c-.38501.38-.60996.8929-.62872 1.4334-.02687.6011.20148 1.1854.62847 1.6092l2.25008 2.2501c.7307.7914 1.9343.9202 2.8162.3015z"
-                          clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <Modal
-                isOpen={modalBankIsOpen}
-                onRequestClose={closeModalBank}
-                style={{
-                    content: {
-                        width: "90%",
-                        height: "40%",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        overlay: {
-                            backgroundColor: "rgba(0,0,0,0)",
+                <button className="button-cskh" onClick={() => setDivChatAdmin()}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="46" viewBox="0 0 46 46" height="46" fill="none"
+                         className="svg-icon">
+                        <path strokeWidth="2" strokeLinecap="round" stroke="#fff" fill-rule="evenodd"
+                              d="m14.5037 27.0715c.819-.634 1.7094-1.1699 2.653-1.597.7621-.3521 1.2557-1.1094 1.2699-1.9488-.0073-1.1346.7466-2.1517 1.8673-2.3279 1.7701-.2782 3.5728-.2785 5.3429-.0005 1.1206.1759 1.8744 1.193 1.8669 2.3274.0206.8307.5066 1.5791 1.257 1.9359.981.4173 1.9093.9489 2.7657 1.5838.8765.5876 2.0467.4715 2.791-.2769l2.2507-2.2507c.4294-.4283.6617-1.0157.6414-1.6219-.0308-.5985-.314-1.1559-.7793-1.5337-2.5842-2.0976-5.6309-3.5496-8.888-4.2357-2.9976-.6659-6.1047-.6655-9.1023.0009-3.2453.7041-6.2835 2.1503-8.87655 4.2253l-.12568.1256c-.38501.38-.60996.8929-.62872 1.4334-.02687.6011.20148 1.1854.62847 1.6092l2.25008 2.2501c.7307.7914 1.9343.9202 2.8162.3015z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <Modal
+                    isOpen={modalBankIsOpen}
+                    onRequestClose={closeModalBank}
+                    style={{
+                        content: {
+                            width: "90%",
+                            height: "40%",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            overlay: {
+                                backgroundColor: "rgba(0,0,0,0)",
+                            },
+                            border: "1px solid black",
+                            scroll: "none",
+                            overflow: "hidden",
+                            backgroundColor: "#f72d7a"
                         },
-                        border: "1px solid black",
-                        scroll: "none",
-                        overflow: "hidden",
-                        backgroundColor: "#f72d7a"
-                    },
-                }}
-            >
-                <div style={{width :"100%",display:"flex",marginTop :"50px",marginLeft:"30px"}}>
-                    <h6>Tên Ngân Hàng :</h6><input id={"BankName"}  style={{marginLeft:"10px"}} type="text" placeholder={"Tên ngân hàng !"}/>
-                </div>
-                <div style={{width :"100%",display :"flex",marginTop:"10px",marginLeft:"30px"}}>
-                    <h6>Số Tài Khoản :</h6><input id={"BankCode"}  style={{marginLeft:"25px"}} type="number" placeholder={"Số Tài khoản ngân hàng !"}/>
-                </div>
-                <div  style={{width :"100%",display :"flex",marginTop:"10px",marginLeft:"30px"}}>
-                    <h6>Số Điểm Đổi :</h6><input id={"BankPoint"} style={{marginLeft:"32px"}} type="number" placeholder={"Số điểm đổi !"}/>
-                </div>
-                <div  style={{width :"100%",display :"flex",marginTop:"10px",marginLeft:"30px"}}>
-                    <h6>Nội dung :</h6><input id={"BankContent"} style={{marginLeft:"57px"}} type="number" placeholder={"Nội dung !"}/>
-                </div>
-                <div style={{width :"100%",display :"flex",marginTop:"10px",marginLeft:"30px"}}>
-                    <button onClick={()=>createExchangePoints()}>Đổi điểm</button>
-                    <button style={{marginLeft:"10px"}} onClick={()=>setModalBankIsOpen(false)}>Đóng</button>
-                </div>
-            </Modal>
-            {isLogin && <Navigate to="/login"/>}
-            {isChatRoom && <Navigate to="/chatRoom"/>}
-        </div>);
+                    }}
+                >
+                    <div style={{width: "100%", display: "flex", marginTop: "50px", marginLeft: "30px"}}>
+                        <h6>Tên Ngân Hàng :</h6><input id={"BankName"} style={{marginLeft: "10px"}} type="text"
+                                                       placeholder={"Tên ngân hàng !"}/>
+                    </div>
+                    <div style={{width: "100%", display: "flex", marginTop: "10px", marginLeft: "30px"}}>
+                        <h6>Số Tài Khoản :</h6><input id={"BankCode"} style={{marginLeft: "25px"}} type="number"
+                                                      placeholder={"Số Tài khoản ngân hàng !"}/>
+                    </div>
+                    <div style={{width: "100%", display: "flex", marginTop: "10px", marginLeft: "30px"}}>
+                        <h6>Số Điểm Đổi :</h6><input id={"BankPoint"} style={{marginLeft: "32px"}} type="number"
+                                                     placeholder={"Số điểm đổi !"}/>
+                    </div>
+                    <div style={{width: "100%", display: "flex", marginTop: "10px", marginLeft: "30px"}}>
+                        <h6>Nội dung :</h6><input id={"BankContent"} style={{marginLeft: "57px"}} type="text"
+                                                  placeholder={"Nội dung !"}/>
+                    </div>
+                    <div style={{width: "100%", display: "flex", marginTop: "10px", marginLeft: "30px"}}>
+                        <button onClick={() => createExchangePoints()}>Đổi điểm</button>
+                        <button style={{marginLeft: "10px"}} onClick={() => setModalBankIsOpen(false)}>Đóng</button>
+                    </div>
+                </Modal>
+                {isLogin && <Navigate to="/login"/>}
+                {isChatRoom && <Navigate to="/chatRoom"/>}
+            </div>);
     }
 ;
 

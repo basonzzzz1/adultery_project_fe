@@ -128,46 +128,58 @@ const ChatRoom = () => {
         // console.log("=====================",objDiv.scrollHeight)
         objDiv.scrollTop = objDiv.scrollHeight;
     }
-    return (
-        <div id={"div-body"}>
-            <div style={{display: "flex", height: "100px" , backgroundColor : "#f72d7a"}}>
-                <div id={"chatRoom-header-img"} style={{width: "95%"}}>
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+    };
 
-                </div>
-                <div style={{width: "30px", marginTop: "10x", marginLeft: "20px"}}>
-                    <div style={{width: "30px"}}>
-                        <button onClick={() => Exit()}
-                                style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "10px"}}>
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+    return (
+        <div style={{}}>
+            <div id={"div-body"} style={{width:windowWidth > 500 ? "100%" :"100%"}}>
+                <div style={{display: "flex", height: "100px" , backgroundColor : "#f72d7a"}}>
+                    <div id={"chatRoom-header-img"} style={{width: "95%"}}>
+
+                    </div>
+                    <div style={{width: "30px", marginTop: "10x", marginLeft: "20px"}}>
+                        <div style={{width: "30px"}}>
+                            <button onClick={() => Exit()}
+                                    style={{backgroundColor: "#f72d7a", border: "hidden", marginTop: "10px"}}>
                 <span className="icon" style={{color: "black", textAlign: "center"}}>
                 <i style={{color :"white", fontSize: "30px", border: "1px solid gray" ,backgroundColor: "#f72d7a"}} className='bx bxs-exit'></i>
                 </span>
-                        </button>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div  style={{
-                width: "99%",
-                height: "700px",
-                marginLeft: "6px",
-                marginTop: "10px",
-            }}>
-                <div id={"bodyMessage"}
-                     style={{
-                         width: '100%',
-                         height: '85%',
-                         display: 'block',
-                         overflowY : "scroll"
-                     }}
-                >
-                    {listMessage.map((m) => (
-                        <div
-                            key={m.id}
-                            style={{
-                                display: 'flex',
-                                width: '100%',
-                                justifyContent: m.user.id == localStorage.getItem('idAccount') ? 'flex-end' : 'flex-start',
-                            }}
-                        >
+                <div  style={{
+                    width: "99%",
+                    height: "700px",
+                    marginLeft: "6px",
+                    marginTop: "10px",
+                }}>
+                    <div id={"bodyMessage"}
+                         style={{
+                             width: '100%',
+                             height: '85%',
+                             display: 'block',
+                             overflowY : "scroll"
+                         }}
+                    >
+                        {listMessage.map((m) => (
+                            <div
+                                key={m.id}
+                                style={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    justifyContent: m.user.id == localStorage.getItem('idAccount') ? 'flex-end' : 'flex-start',
+                                }}
+                            >
                                 <div className={m.user.id == localStorage.getItem('idAccount') ? 'my-message' : 'other-message'}>
                                     <div style={{ width: '100%' }}>
                                         <div style={{ display: 'block', float: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left' }}>
@@ -180,6 +192,7 @@ const ChatRoom = () => {
                                         </div>
                                     </div>
                                     <br />
+
                                     <div
                                         style={{
                                             backgroundColor: m.user.id == localStorage.getItem('idAccount') ? '#f72d7a':'white',
@@ -188,7 +201,7 @@ const ChatRoom = () => {
                                             textAlign: m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left',
                                         }}
                                     >
-                                        <p style={{
+                                        {m.content != "" ? <p style={{
                                             color : m.user.id == localStorage.getItem('idAccount') ? "white" :"black",
                                             padding:"5px",
                                             paddingLeft: '5px',
@@ -197,80 +210,82 @@ const ChatRoom = () => {
                                             marginRight: m.user.id == localStorage.getItem('idAccount') ? '10px' : '0',
                                         }}>
                                             {m.content}
-                                        </p>
-                                        <div style={{width :"100%" ,float :m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left'}}>
-                                            <img style={{maxWidth :"800px"}} src={m.image} alt=""/>
+                                        </p>: <></>}
+
+                                        <div style={{width :"auto" ,float :m.user.id == localStorage.getItem('idAccount') ? 'right' : 'left'}}>
+                                            <img style={{width:"auto"}} src={m.image} alt=""/>
                                         </div>
                                     </div>
                                 </div>
-                        </div>
-                    ))}
-                </div>
-                <div id={"chatRoomSubmit"}
-                     style={{width: "100%", height: "10%", display: "flex", border: "1px solid black"}}>
-                    {/*<input id={"contentMessage"} type="text" placeholder={"Nhập văn bản ... !"} style={{*/}
-                    {/*    width: "70%",*/}
-                    {/*    height: "35px",*/}
-                    {/*    borderRadius: "8px",*/}
-                    {/*    marginTop: "23px",*/}
-                    {/*    marginLeft: "150px",*/}
-                    {/*    border :"hidden"*/}
-                    {/*}}/>*/}
-                    <div className="messageBox">
-                        <div className="fileUploadWrapper">
-                            <label htmlFor="file" style={{marginTop :"8px"}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
-                                    <circle
-                                        stroke-width="20"
-                                        stroke="#6c6c6c"
-                                        fill="none"
-                                        r="158.5"
-                                        cy="168.5"
-                                        cx="168.5"
-                                    ></circle>
+                            </div>
+                        ))}
+                    </div>
+                    <div id={"chatRoomSubmit"}
+                         style={{width: "100%", height: "10%", display: "flex", border: "1px solid black"}}>
+                        {/*<input id={"contentMessage"} type="text" placeholder={"Nhập văn bản ... !"} style={{*/}
+                        {/*    width: "70%",*/}
+                        {/*    height: "35px",*/}
+                        {/*    borderRadius: "8px",*/}
+                        {/*    marginTop: "23px",*/}
+                        {/*    marginLeft: "150px",*/}
+                        {/*    border :"hidden"*/}
+                        {/*}}/>*/}
+                        <div className="messageBox">
+                            <div className="fileUploadWrapper">
+                                <label htmlFor="file" style={{marginTop :"8px"}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
+                                        <circle
+                                            stroke-width="20"
+                                            stroke="#6c6c6c"
+                                            fill="none"
+                                            r="158.5"
+                                            cy="168.5"
+                                            cx="168.5"
+                                        ></circle>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-width="25"
+                                            stroke="#6c6c6c"
+                                            d="M167.759 79V259"
+                                        ></path>
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-width="25"
+                                            stroke="#6c6c6c"
+                                            d="M79 167.138H259"
+                                        ></path>
+                                    </svg>
+                                    <span className="tooltip">Add an image</span>
+                                </label>
+                                <input type="file" id="file" name="file" onChange={(event) => {
+                                    setImageUpload(event.target.files[0]);
+                                }} />
+                            </div>
+                            <input  required="" placeholder="Message..." type="text" id="messageInput" />
+                            <button id="sendButton" onClick={() => createMessageUser()}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663">
                                     <path
-                                        stroke-linecap="round"
-                                        stroke-width="25"
-                                        stroke="#6c6c6c"
-                                        d="M167.759 79V259"
+                                        fill="none"
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
                                     ></path>
                                     <path
+                                        stroke-linejoin="round"
                                         stroke-linecap="round"
-                                        stroke-width="25"
+                                        stroke-width="33.67"
                                         stroke="#6c6c6c"
-                                        d="M79 167.138H259"
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
                                     ></path>
                                 </svg>
-                                <span className="tooltip">Add an image</span>
-                            </label>
-                            <input type="file" id="file" name="file" onChange={(event) => {
-                                setImageUpload(event.target.files[0]);
-                            }} />
+                            </button>
                         </div>
-                        <input  required="" placeholder="Message..." type="text" id="messageInput" />
-                        <button id="sendButton" onClick={() => createMessageUser()}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663">
-                                <path
-                                    fill="none"
-                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                ></path>
-                                <path
-                                    stroke-linejoin="round"
-                                    stroke-linecap="round"
-                                    stroke-width="33.67"
-                                    stroke="#6c6c6c"
-                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                ></path>
-                            </svg>
-                        </button>
-                    </div>
 
-                    {/*<button onClick={() => createMessageUser()}*/}
-                    {/*        style={{height: "35px", marginLeft: "10px", marginTop: "25px" , borderRadius :"5px"}}>Gửi*/}
-                    {/*</button>*/}
+                        {/*<button onClick={() => createMessageUser()}*/}
+                        {/*        style={{height: "35px", marginLeft: "10px", marginTop: "25px" , borderRadius :"5px"}}>Gửi*/}
+                        {/*</button>*/}
+                    </div>
                 </div>
+                {isExit && <Navigate to="/home"/>}
             </div>
-            {isExit && <Navigate to="/home"/>}
         </div>
     );
 };

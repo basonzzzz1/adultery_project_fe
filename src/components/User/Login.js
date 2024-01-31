@@ -97,6 +97,7 @@ const Login = () => {
             };
             const response = await UserService.register(userRegister);
             console.log(response)
+            document.getElementById("login-link").click();
             toast.success("đăng ký thành công !")
         } catch (error) {
             console.error("Error:", error);
@@ -146,8 +147,6 @@ const Login = () => {
                     <nav className="navbar">
                         <a href="#">Trang Chủ</a>
                         <a href="#">Thông tin</a>
-                        <a href="#">Nội dung</a>
-                        <a href="#">Trợ Giúp</a>
                     </nav>
                     <form action="" className="search-bar" style={{transform: 'translateX(-300px)'}}>
                         <input type="text" placeholder="Tìm Kiếm..."/>
@@ -156,11 +155,11 @@ const Login = () => {
                 </header>
                 :
                 <header className="header" style={{textAlign: "center"}}><h3
-                    style={{marginLeft: "15%", color: "white"}}>Tìm bạn bốn phương</h3></header>
+                    style={{marginLeft: "15%", color: "white"}}></h3></header>
             }
-
+            {windowWidth > 500 ? <div className="background"></div> :<></>}
             <div className="background"></div>
-            <div className="container">
+            <div className="container-login" style={{width : windowWidth > 500 ? "75%" : "100%",height:windowWidth >500 ?"550px":"100%" }}>
                 {windowWidth > 800 ?
                     <div className="item">
                         <h2 className="logo"><i className='bx bxl-xing'></i>Lucky Love</h2>
@@ -178,8 +177,8 @@ const Login = () => {
                             </div>
                         </div>
                     </div> : <></>}
-                {windowWidth > 800 ?
-                    <div className="login-section">
+                {windowWidth > 500 ?
+                    <div className="login-section" style={{marginRight :"30px"}}>
                         <div className="form-box login">
                             <Formik initialValues={
                                 {
@@ -270,7 +269,7 @@ const Login = () => {
                         </div>
                     </div>
                     :
-                    <div style={{marginRight:"100px"}} className="login-section">
+                    <div style={{marginRight:"110px"}} className="login-section">
                         <div className="form-box login">
                             <Formik initialValues={
                                 {
@@ -354,7 +353,7 @@ const Login = () => {
                                     </div>
                                     <button className="btn" type={"submit"}>Đăng ký</button>
                                     <div className="create-account">
-                                        <p>Bạn đã có tài khoản? <a href="#" className="login-link">Đăng nhập</a></p>
+                                        <p>Bạn đã có tài khoản? <a href="#" className="login-link" id={"login-link"}>Đăng nhập</a></p>
                                     </div>
                                 </Form>
                             </Formik>
