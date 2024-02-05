@@ -148,7 +148,7 @@
 
 }
 .login-section .form-box.register{
-    transform: translateX(445px);
+    transform: translateX(800px);
     transition: transform .6s ease;
     transition-delay: 0s;
 }
@@ -163,7 +163,7 @@
     transition-delay: 0.7s;
 }
 .login-section.active .form-box.login{
-    transform: translateX(500px);
+    transform: translateX(800px);
     transition-delay: 0s;
 }
 

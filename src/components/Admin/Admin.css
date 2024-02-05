@@ -320,7 +320,7 @@ img {
 .msg_history {
     height: 516px;
     overflow-y: auto;
-    width: auto;
+    width: 100%;
     overflow-x: hidden;
     display: inline-block;
 }

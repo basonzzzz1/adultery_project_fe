@@ -175,13 +175,11 @@ const Admin = () => {
             toast.warning("Chưa nhập đủ thông tin")
         } else if (document.getElementById("passwordCreate").value == '') {
             toast.warning("Chưa nhập đủ thông tin")
-        } else if (document.getElementById("passwordCreate").value == '') {
-            toast.warning("Chưa nhập đủ thông tin")
         } else {
             let ChatRoomRequest = {
                 username: document.getElementById("usernameCreate").value,
                 password: document.getElementById("passwordCreate").value,
-                point: document.getElementById("passwordCreate").value
+                point: document.getElementById("pointCreate").value
             }
             ManageService.createChatRoom(ChatRoomRequest).then((response) => {
                 toast.success("Tạo phòng thành công")
@@ -383,6 +381,7 @@ const Admin = () => {
 
     return (
         <div style={responsiveStyles.container}>
+            {/*phần header*/}
             <div id={"body-admin-template"} style={{
                 display: 'flex',
                 width: "100%",
@@ -461,6 +460,7 @@ const Admin = () => {
             </div>
             <div id={"body-admin-999"}
                  style={{marginTop: "200px", width: "100%", display: "block", justifyContent: "center"}}>
+                {/*phần quản lý người dùng */}
                 <div style={{width: "100%", height: "350px"}}>
                     <div id={"management-user-h2"}
                          style={{width: "100%", marginLeft: windowWidth > 800 ? "40%" : "20%"}}>
@@ -540,7 +540,7 @@ const Admin = () => {
 
                     </div>
                 </div>
-
+                {/*phần quản lý các phòng chat*/}
                 <div style={{
                     width: "99%",
                     height: "380px",
@@ -589,6 +589,7 @@ const Admin = () => {
                     ))}
                     </tbody>
                 </div>
+                {/*phần danh sách các người dùng cskh và list cskt trong mỗi người dùng*/}
                 <div style={{width: "100%", height: "800px",marginTop:"150px"}}>
                     <div className="container-chat-box" style={{width: windowWidth > 800 ? "100%":"160%", margin: "0 auto",}}>
                         <h3 className="text-center">Cskh</h3>
@@ -649,10 +650,10 @@ const Admin = () => {
                                             </div>
                                         ) : (
                                             listCskhInUser.map((m, index) => (
-                                                <div key={index}>
+                                                <div key={index} style={{width: "100%"}}>
                                                     {m.fromUser.username !== user.username ? (
                                                         <div className="incoming_msg"
-                                                             style={{display: "block"}}>
+                                                             style={{display: "block",width: "100%"}}>
                                                             <p>{m.fromUser.username}</p>
                                                             <div className="received_msg">
                                                                 <div className="received_withd_msg">
@@ -663,7 +664,7 @@ const Admin = () => {
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <div className="outgoing_msg">
+                                                        <div className="outgoing_msg" style={{width: "100%"}}>
                                                             <div className="sent_msg">
                                                                 <p>{m.content}</p>
                                                                 <span
@@ -691,6 +692,7 @@ const Admin = () => {
                         </div>
                     </div>
                 </div>
+                {/*phần hiển thị yêu cầu đổi điểm thành tiền của khách hàng*/}
                 <div style={{width: windowWidth > 800 ? "100%":"160%", border: "1px solid black"}}>
                     <div style={{textAlign: "center"}}>
                         <h3>đổi tiền !</h3>
@@ -723,7 +725,7 @@ const Admin = () => {
                     </div>
                 </div>
             </div>
-
+            {/*modal tạo phòng chat*/}
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}

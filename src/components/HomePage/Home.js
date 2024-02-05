@@ -4,7 +4,7 @@ import {useWebSocket} from "../../context/WebSocketContext";
 import ManageService from "../../service/ManageService";
 import {toast} from "react-toastify";
 import Modal from "react-modal";
-import "./Home.css"
+import "./Home.scss"
 import * as winwheel from "@evshiron/winwheel.js";
 import spinOffImage from "./spin_off.png";
 
@@ -310,14 +310,16 @@ const Home = () => {
             resetWheel();
         }
 
+    const [pointWin, setPointWin] = useState(0)
         const extraPointsInUser = (point) => {
             let PointRequest = {
                 username: "",
                 point: point
             }
             ManageService.extraPointsInUser(PointRequest).then((response) => {
-                alert("bạn đã nhận được :" + point + " điểm thưởng !")
                 ManageService.CountSpin().then((res) => {
+                    setPointWin(point)
+                    createFirework();
                     setLoad(true)
                 }).catch((error) => {
                     console.log(error)
@@ -326,8 +328,13 @@ const Home = () => {
             }).catch((err) => {
                 console.log(err)
             })
-
-
+        }
+        const [firework, setFirework] = useState(false)
+        const createFirework = () => {
+            setFirework(true);
+        }
+        const removeFirework = () => {
+          setFirework(false)
         }
 
         function calculateTimeChat(createdAt) {
@@ -388,21 +395,30 @@ const Home = () => {
                 objDiv.scrollTop = objDiv.scrollHeight;
             }
         }, [load]);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+        const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const handleResize = () => {
-        setWindowWidth(window.innerWidth);
-    };
-
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
         };
-    }, []);
+
+        useEffect(() => {
+            window.addEventListener('resize', handleResize);
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }, []);
         return (
             <div>
-                <div id={"header-home"} style={{display: "flex", backgroundColor: "#f72d7a", height: "100px" ,width:"100%",position :"fixed",top:"0",zIndex:"100"}}>
+                {/*phần header */}
+                <div id={"header-home"} style={{
+                    display: "flex",
+                    backgroundColor: "#f72d7a",
+                    height: "100px",
+                    width: "100%",
+                    position: "fixed",
+                    top: "0",
+                    zIndex: "100"
+                }}>
                     <div style={{width: "80%", display: "flex"}}>
                         <div id={"div-header-img"} style={{width: "85%", display: "flex"}}>
                             <div style={{width: "85%"}}>
@@ -410,8 +426,11 @@ const Home = () => {
                             </div>
                         </div>
                         <div style={{width: "180px", height: "50px", marginTop: "30px", display: "block"}}>
-                            <h4 style={{marginTop: "0px"}}>{user.username}</h4>
-                            <p style={{marginTop: "0px", marginLeft: "5px"}}>point :{user.point}</p>
+                            <div style={{display:"flex"}}>
+                                <h4 style={{marginTop: "0px"}}>{user.username}</h4><h4 style={{color:"gray",fontWeight:"bold"}}>#{user.id}</h4>
+                            </div>
+
+                            <p style={{marginTop: "0px", marginLeft: "5px"}}>điểm :{user.point}</p>
                         </div>
                     </div>
                     <div>
@@ -452,11 +471,12 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
-                <div style={{width: "100%", display: "flex",marginTop:"100px"}}>
+                {/*hiển thị vòng quay may mắn*/}
+                <div style={{width: "100%", display: "flex", marginTop: "100px"}}>
                     <div id={"div-luckySpin-body"}>
 
                     </div>
-                    <div style={{width:windowWidth > 800 ?"40%":"100%", textAlign: "center"}}>
+                    <div style={{width: windowWidth > 800 ? "40%" : "100%", textAlign: "center"}}>
                         <div id={"div-lucky-spin-header"}>
                             <h1 style={{color: '#ef6f6f', width: "100%"}}>Vòng quay may mắn</h1>
                             <p>Bạn có {user.countSpin} lượt quay </p>
@@ -492,6 +512,7 @@ const Home = () => {
                         </table>
                     </div>
                 </div>
+                {/*modal xác nhận mật khẩu vào phòng*/}
                 <Modal
                     isOpen={modalIsOpen}
                     onRequestClose={closeModal}
@@ -528,6 +549,7 @@ const Home = () => {
                         </button>
                     </div>
                 </Modal>
+                {/*phần hiển thị list chat cskh*/}
                 {isDivChatAdmin ?
                     <div id={"div-chat-admin-user"}>
                         <div style={{
@@ -593,7 +615,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div> : <></>}
-
+                {/*nút để hiển thị của sổ cskh */}
                 <button className="button-cskh" onClick={() => setDivChatAdmin()}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="46" viewBox="0 0 46 46" height="46" fill="none"
                          className="svg-icon">
@@ -602,6 +624,7 @@ const Home = () => {
                               clip-rule="evenodd"></path>
                     </svg>
                 </button>
+                {/*modal yêu cầu đổi điểm*/}
                 <Modal
                     isOpen={modalBankIsOpen}
                     onRequestClose={closeModalBank}
@@ -643,9 +666,36 @@ const Home = () => {
                         <button style={{marginLeft: "10px"}} onClick={() => setModalBankIsOpen(false)}>Đóng</button>
                     </div>
                 </Modal>
+                {/*phần popup hiển thị kết quả vòng quay may mắn*/}
+                {firework ?<div id={"Fireworks-div"} style={{
+                    width: "400px",
+                    height: "320px",
+                    position:"absolute",
+                    borderRadius:"10px",
+                    transform: windowWidth > 500 ? "translateX(558px) translateY(-450px)" : "translateX(50px) translateY(-450px)"
+                }}>
+                    <div className="pyro">
+                        <div className="before"></div>
+                        <div className="after"></div>
+                    </div>
+                    <div style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        marginTop: "50px",
+                        height: "100%",
+                        width: "100%"
+                    }}>
+                        <h3 style={{color:"gold"}}>Xin chúc mừng !!!</h3>
+                       <h5 style={{color:"#fdd2e2" , fontWeight :"bold"}}>Chúc mừng quý khách mang ID: {user.id}</h5>
+                       <h5 style={{color:"#fdd2e2" , fontWeight :"bold"}}> đã trúng giải thưởng ngẫu nhiên {pointWin} điểm</h5>
+                        <button onClick={()=>removeFirework()} style={{paddingTop :"8px",paddingBottom:"8px",paddingLeft:"15px",paddingRight:"15px",border:"hidden",borderRadius:"5px"}}><p style={{color:"black",fontWeight:"bold"}}>Đồng ý</p></button>
+                    </div>
+                </div> :<></> }
+
                 {isLogin && <Navigate to="/login"/>}
                 {isChatRoom && <Navigate to="/chatRoom"/>}
-            </div>);
+            </div>
+        );
     }
 ;
 

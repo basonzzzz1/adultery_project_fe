@@ -55,11 +55,16 @@ const Login = () => {
         passwordRGT: Yup.string()
             .required("Mật khẩu không thể để trống")
             .test('no-spaces', 'Mật khẩu không được chứa dấu cách', value => !/\s/.test(value)),
+        passwordContinue: Yup.string()
+            .required("Mật khẩu không trùng nhau")
+            .oneOf([Yup.ref('passwordRGT'), null], 'Mật khẩu không khớp')
+            .test('no-spaces', 'Mật khẩu không được chứa dấu cách', value => !/\s/.test(value)),
         phone: Yup.string()
             .matches(/^\d{10,15}$/, 'Số điện thoại Không đúng định dạng !')
             .required("Số điẹn thoại không thể để trống")
             .test('no-spaces', 'Số điẹn thoại không được chứa khoảng trống', value => !/\s/.test(value)),
-    })
+    });
+
     const loginIn = async () => {
         try {
             const response = await UserService.login(user);
@@ -95,7 +100,34 @@ const Login = () => {
                 role: ["user"],
                 password: userRGT.passwordRGT
             };
-            const response = await UserService.register(userRegister);
+            const response = await UserService.register(userRegister).then((response)=>{
+                let userNew = {
+                    username :userRGT.usernameRGT,
+                    password : userRGT.passwordRGT
+                }
+                UserService.login(userNew).then((response)=>{
+                    localStorage.setItem("userToken", JSON.stringify(response.data.accessToken));
+                    localStorage.setItem("idAccount", JSON.stringify(response.data.id));
+                    localStorage.setItem("account", JSON.stringify(response.data));
+                    dispatch(updateUserToken(response.data));
+                    if ((response.data.roles[0] == "ROLE_USER" && response.data.roles[1] == "ROLE_ADMIN") || (response.data.roles[0] == "ROLE_ADMIN" && response.data.roles[1] == "ROLE_USER")) {
+                        setModalIsOpen(true)
+                    } else if (response.data.roles[0] == "ROLE_ADMIN") {
+                        setIsLoginAdmin(true)
+                        toast.success("Đăng nhập thành công !");
+                    } else if (response.data.banner) {
+                        setModalIsBannedOpen(true)
+                        toast.error("tài khoản của bạn đã bị khóa !")
+                    } else {
+                        setIsLogin(true);
+                        toast.success("Đăng nhập thành công !");
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                });
+            }).catch((err)=>{
+                console.log(err)
+            });
             console.log(response)
             document.getElementById("login-link").click();
             toast.success("đăng ký thành công !")
@@ -207,7 +239,6 @@ const Login = () => {
                                         <label>Mật Khẩu</label>
                                     </div>
                                     <div className="remember-password">
-                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản !</label>
                                         <a href="#">Quên Mật khẩu</a>
                                     </div>
                                     <button className="btn" type={"submit"}>Đăng nhập</button>
@@ -234,7 +265,6 @@ const Login = () => {
                                     <p id="result"></p>
                                     <div className="input-box">
                                         <span className="icon"><i className='bx bxs-user'></i></span>
-                                        {/*<input type="text" name="Username" autoComplete="off" required/>*/}
                                         <Field type="text" name={"usernameRGT"} autoComplete="off" required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="usernameRGT" component="div" className="text-danger"/>
@@ -242,23 +272,26 @@ const Login = () => {
                                     </div>
                                     <div className="input-box">
                                         <span className="icon"><i className='bx bxs-lock-alt'></i></span>
-                                        {/*<input type="password" name="Password" id="PasswordC" autoComplete="off" required/>*/}
                                         <Field type="password" autoComplete="off" name={"passwordRGT"} required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="passwordRGT" component="div" className="text-danger"/>
                                         <label>Mật khẩu</label>
                                     </div>
                                     <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        <Field type="password" autoComplete="off" name={"passwordContinue"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="passwordContinue" component="div" className="text-danger"/>
+                                        <label>Xác nhận mật khẩu</label>
+                                    </div>
+                                    <div className="input-box">
                                         <span className="icon"><i className='bx bxs-phone'></i></span>
-                                        {/*<input type="email" name="" id="CPassword" autoComplete="off" required/>*/}
                                         <Field type="text" autoComplete="off" id={"phone"} name={"phone"} required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="phone" component="div" className="text-danger"/>
                                         <label htmlFor="phone">Số Diện Thoại</label>
                                     </div>
                                     <div className="remember-password">
-                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản và dịch
-                                            vụ</label>
                                     </div>
                                     <button className="btn" type={"submit"}>Đăng ký</button>
                                     <div className="create-account">
@@ -298,7 +331,6 @@ const Login = () => {
                                         <label>Mật Khẩu</label>
                                     </div>
                                     <div className="remember-password">
-                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản !</label>
                                         <a href="#">Quên Mật khẩu</a>
                                     </div>
                                     <button className="btn" type={"submit"}>Đăng nhập</button>
@@ -325,7 +357,6 @@ const Login = () => {
                                     <p id="result"></p>
                                     <div className="input-box">
                                         <span className="icon"><i className='bx bxs-user'></i></span>
-                                        {/*<input type="text" name="Username" autoComplete="off" required/>*/}
                                         <Field type="text" name={"usernameRGT"} autoComplete="off" required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="usernameRGT" component="div" className="text-danger"/>
@@ -333,23 +364,26 @@ const Login = () => {
                                     </div>
                                     <div className="input-box">
                                         <span className="icon"><i className='bx bxs-lock-alt'></i></span>
-                                        {/*<input type="password" name="Password" id="PasswordC" autoComplete="off" required/>*/}
                                         <Field type="password" autoComplete="off" name={"passwordRGT"} required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="passwordRGT" component="div" className="text-danger"/>
                                         <label>Mật khẩu</label>
                                     </div>
                                     <div className="input-box">
+                                        <span className="icon"><i className='bx bxs-lock-alt'></i></span>
+                                        <Field type="password" autoComplete="off" name={"passwordContinue"} required
+                                               onInput={changeInputRGT}/>
+                                        <ErrorMessage name="passwordContinue" component="div" className="text-danger"/>
+                                        <label>Xác nhận mật khẩu</label>
+                                    </div>
+                                    <div className="input-box">
                                         <span className="icon"><i className='bx bxs-phone'></i></span>
-                                        {/*<input type="email" name="" id="CPassword" autoComplete="off" required/>*/}
                                         <Field type="text" autoComplete="off" id={"phone"} name={"phone"} required
                                                onInput={changeInputRGT}/>
                                         <ErrorMessage name="phone" component="div" className="text-danger"/>
                                         <label htmlFor="phone">Số Diện Thoại</label>
                                     </div>
                                     <div className="remember-password">
-                                        <label htmlFor=""><input type="checkbox"/>Đồng ý với điều khoản và dịch
-                                            vụ</label>
                                     </div>
                                     <button className="btn" type={"submit"}>Đăng ký</button>
                                     <div className="create-account">
